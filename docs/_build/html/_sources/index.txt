@@ -1,4 +1,3 @@
-
 Plié: A Python Terminal User Interface Library
 ==============================================
 
@@ -46,3 +45,19 @@ Planned features:
 
 **Plié is in early alpha currently, all publicly exposed names and attributes may change during
 alpha.**
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+
+
+.. toctree::
+   :maxdepth: 3
+
+   Plié development todo list <development_todo_list.rst>
+   module_reference

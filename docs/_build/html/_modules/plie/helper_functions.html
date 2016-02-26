@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>plie.helper_functions &mdash; Plié 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Plié 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plie.helper_functions</h1><div class="highlight"><pre>
+<span></span>
+<div class="viewcode-block" id="array_insert"><a class="viewcode-back" href="../../plie.html#plie.helper_functions.array_insert">[docs]</a><span class="k">def</span> <span class="nf">array_insert</span><span class="p">(</span><span class="n">insertable</span><span class="p">,</span>
+                 <span class="n">receives_insertion</span><span class="p">,</span>
+                 <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                 <span class="n">highlight</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">highlight_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot; inserts insertable into receives_insertion, where insertable is a string, and</span>
+<span class="sd">    receives_insertion is an FSArray</span>
+
+<span class="sd">    array_insert will insert insertables bigger than receives_insertion can handle</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        insertable: a string to insert</span>
+<span class="sd">        receives_insertion: an FSArray to</span>
+<span class="sd">        offset: distance from top left to start insertion.</span>
+<span class="sd">            (x,y) format because that&#39;s the only reasonable way</span>
+<span class="sd">        highlight: changes the coloring of the char to insert, used to make text look highlighted</span>
+<span class="sd">        highlight_color: sets the color for showing the highlight, see curtsies foreground color</span>
+<span class="sd">            choices for a list of possible options</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Goes character by character through insertable to add them one at a time to</span>
+<span class="sd">        receives_insertion since that gets around the complication of making slice sizes with the</span>
+<span class="sd">        length of strings trying to be inserted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">insertable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">highlight</span><span class="p">:</span>
+            <span class="n">receives_insertion</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">fmtstr</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">highlight_color</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">receives_insertion</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span>
+    <span class="k">return</span> <span class="n">receives_insertion</span></div>
+
+
+
+<div class="viewcode-block" id="borderer"><a class="viewcode-back" href="../../plie.html#plie.helper_functions.borderer">[docs]</a><span class="k">def</span> <span class="nf">borderer</span><span class="p">(</span><span class="n">array</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">30</span><span class="p">,):</span>
+    <span class="sd">&quot;&quot;&quot; Give it height and width, and it&#39;ll give you a bordered box as a FSArray.</span>
+
+<span class="sd">    borderer consumes the outermost cell for border drawing.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        array: FSArray to surround with a border</span>
+<span class="sd">        width: of the border</span>
+<span class="sd">        height: of the border</span>
+
+<span class="sd">    Returns: FSArray with a border surrounding it</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">top_left</span> <span class="o">=</span> <span class="s1">&#39;╒&#39;</span>
+    <span class="n">top_right</span> <span class="o">=</span> <span class="s1">&#39;╕&#39;</span>
+    <span class="n">bottom_left</span> <span class="o">=</span> <span class="s1">&#39;╘&#39;</span>
+    <span class="n">bottom_right</span> <span class="o">=</span> <span class="s1">&#39;╛&#39;</span>
+    <span class="n">horizontal</span> <span class="o">=</span> <span class="s1">&#39;═&#39;</span>
+    <span class="n">vertical</span> <span class="o">=</span> <span class="s1">&#39;│&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">array</span><span class="p">:</span>
+        <span class="n">box_array</span> <span class="o">=</span> <span class="n">fsarray</span><span class="p">([</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">width</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">box_array</span> <span class="o">=</span> <span class="n">array</span>
+    <span class="n">box_array</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">top_left</span>
+    <span class="n">box_array</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">top_right</span>
+    <span class="n">box_array</span><span class="p">[</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bottom_left</span>
+    <span class="n">box_array</span><span class="p">[</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bottom_right</span>
+    <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># fill space between corners if needed</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">span</span><span class="p">):</span>
+            <span class="n">box_array</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">horizontal</span>
+            <span class="n">box_array</span><span class="p">[</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">horizontal</span>
+    <span class="k">if</span> <span class="n">height</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="mi">2</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">span</span><span class="p">):</span>
+            <span class="n">box_array</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertical</span>
+            <span class="n">box_array</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">vertical</span>
+    <span class="k">return</span> <span class="n">box_array</span></div>
+
+
+<div class="viewcode-block" id="fit_text"><a class="viewcode-back" href="../../plie.html#plie.helper_functions.fit_text">[docs]</a><span class="k">def</span> <span class="nf">fit_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">justification</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">vertical_position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Fit and flow text into an array, splits words to newlines at spaces.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text: The text to fill the array with. Can include special characters, newlines and spaces.</span>
+<span class="sd">        array: The FSArray to put the text into.</span>
+<span class="sd">        margin: Amount of space to leave around the text in cells</span>
+<span class="sd">        justification: acceptable options are &#39;left&#39;, &#39;right&#39; and &#39;center&#39;</span>
+<span class="sd">        vertical_position: acceptable options are &#39;top&#39;, &#39;center&#39;, and &#39;bottom&#39;</span>
+
+<span class="sd">    Returns: an FSArray with the text filling the interior.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array_size</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Jessie Wincek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
