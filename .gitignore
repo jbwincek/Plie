@@ -1,4 +1,7 @@
 
 .idea
+docs/_build
 
 *.pyc
+
+*.doctree

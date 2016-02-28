@@ -7,11 +7,18 @@ Format:
     * sub-feature  [docs] [tests] [implementation]
 
 * ``border                        [ ] [ ] [x]``
-    * ``handle different styles   [ ] [ ] [ ]``
-    * ``context manager           [ ] [ ] [x]``
+    * ``handle different styles   [x] [ ] [x]``
+        * ``docs page for styles          [ ]``
+    * ``context manager           [x] [ ] [x]``
     * ``function version          [ ] [ ] [ ]``
-* ``title bar                     [ ] [ ] [ ]``
+* ``title bar                     [x] [ ] [x]``
 * ``status bar                    [ ] [ ] [ ]``
-* ``fit text``                    [x] [ ] [ ]``
+* ``fit text                      [x] [ ] [ ]``
+    * ``justifications            [x] [ ] [ ]``
+    * ``splitting                 [x] [ ] [ ]``
+    * ``indent                    [x] [ ] [ ]``
+    * ``vertical position         [x] [ ] [ ]``
+    * ``truncate                  [x] [ ] [ ]``
+* ``popup                         [ ] [ ] [ ]``
 
 

@@ -1,7 +1,8 @@
 Plié: A Python Terminal User Interface Library
 ==============================================
 
-Plié adds helper functions and context managers to `Curtsies`_ for creating more complex TUIs.
+Plié adds helper functions and context managers to `Curtsies`_ for creating more complex TUIs. One
+of my main goals with Plié is to keep it simple, straight forward and Pythonic.
 
 .. _Curtsies: https://github.com/thomasballinger/curtsies
 
@@ -25,14 +26,15 @@ now it does. Lets see:
                     win.render_to_terminal(base_array)
                     time.sleep(1.5)
 
-One of my main goals with Plié is to keep it simple, straight forward and Pythonic.
 
 Currently implemented features:
+-------------------------------
     * border: creates a border around an array
     * TitleBar: creates a title at the top of an array
     * array_insert: no more dealing with matching array sizes to slices.
 
 Planned features:
+-----------------
     * popup windows that can display text messages for a specified amount of time.
     * menus which contain multiple selectable items for interface control flow.
     * text flow helpers
@@ -41,6 +43,15 @@ Planned features:
     * footer update-able text like the title
 
 
+Other useful pages
+------------------
+
+.. toctree::
+   :maxdepth: 3
+
+   Plié development todo list <development_todo_list.rst>
+   plie
+   styles
 
 
 **Plié is in early alpha currently, all publicly exposed names and attributes may change during
@@ -56,8 +67,3 @@ Indices and tables
 
 
 
-.. toctree::
-   :maxdepth: 3
-
-   Plié development todo list <development_todo_list.rst>
-   module_reference

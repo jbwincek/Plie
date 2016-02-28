@@ -1,11 +1,8 @@
-plie package
-============
+Plié API Reference
+==================
 
 .. toctree::
    :maxdepth: 3
-
-Submodules
-----------
 
 plie.helper_functions module
 ----------------------------
