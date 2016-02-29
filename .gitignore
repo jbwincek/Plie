@@ -9,9 +9,6 @@ docs/_build/doctrees/
 .hypothesis/
 
 experimental/.ipynb_checkpoints/*
-
-
-
 experimental/Blessed_fullscreen_editor.py
 
 *.js
