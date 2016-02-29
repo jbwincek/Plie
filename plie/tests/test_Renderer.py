@@ -28,6 +28,7 @@ def test_for_blank_rendering_content():
     height = 10
     r = plie.Renderer(size=(width,height), view={})
     output = r.formulate()
-    valid_options = [' ', str(term.move_down)]
+    valid_options = [' ', '\n']  # newline char instead of term signal
+    #valid_options = [' ', str(term.move_down)]
     for char in output:
         assert char in valid_options

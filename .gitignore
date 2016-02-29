@@ -1,6 +1,6 @@
 
 .idea
-docs/_build/doctrees/
+docs/_build/
 
 *.pyc
 
@@ -20,3 +20,5 @@ experimental/Blessed_fullscreen_editor.py
 *.css
 
 .cache/v/cache/lastfailed
+
+experimental/Untitled.ipynb
