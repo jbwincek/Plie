@@ -1,7 +1,15 @@
 
 .idea
-docs/_build
+docs/_build/
 
 *.pyc
 
 *.doctree
+
+.hypothesis/
+
+experimental/.ipynb_checkpoints/*
+
+
+
+experimental/Blessed_fullscreen_editor.py

@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 
 from curtsies import FSArray, FullscreenWindow, Input
-from plie.helper_functions import array_insert, borderer
+from .helper_functions import array_insert, borderer
 
 """
 Notes on this file: This is an attempt to use context managers to composite shape renderings

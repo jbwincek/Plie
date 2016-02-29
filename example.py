@@ -1,5 +1,5 @@
 from curtsies import FullscreenWindow, FSArray
-from plie.plie import border, TitleBar
+from plie._plie_depreciated import border, TitleBar
 import time
 
 def run():

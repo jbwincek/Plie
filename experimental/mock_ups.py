@@ -13,10 +13,10 @@ contents = {
     'header' : partial(plie.simple_title, text='title bar'),
     'styles' : partial(plie.border),
     'body' : [partial(plie.multiselect, choices=[
-                    partial(plie.selectable_text, text = 'option1', function_to_call_upon_select),
-                    partial(plie.selectable_text, text = 'option2', option2_func),]),
-            partial(plie.fit_text, text = SOME_lONG_TEXt),],
-    'footer' : partial(plie.status_bar, text = 'status bar', text_update_call_back)
+                    partial(plie.selectable_text, text ='option1', function_to_call_upon_select),
+                    partial(plie.selectable_text, text ='option2', option2_func),]),
+              partial(plie.fit_text, text = SOME_lONG_TEXt), ],
+    'footer' : partial(plie.status_bar, text ='status bar', text_update_call_back)
 }
 
 
@@ -65,11 +65,11 @@ layout_dict = {
     'header' : plie.text(text='title bar'),
     'styles' : plie.border(border_style='heavy'),
     'body' : [plie.multiselect( choices=[
-                                        plie.text(text = 'option1', callout=function_to_call_upon_select),
-                                        plie.text(text = 'option2', callout=option2_func,)]),
+                                        plie.text(text ='option1', callout=function_to_call_upon_select),
+                                        plie.text(text ='option2', callout=option2_func, )]),
             plie.text(text = SOME_lONG_TEXt, justify='centered'),
             ],
-    'footer' : plie.text(text = 'status bar')
+    'footer' : plie.text(text ='status bar')
 }
 
 
@@ -107,12 +107,12 @@ layout_view = {
     'header' : plie.text(text='title bar'),
     'styles' : plie.border(border_style='heavy'),
     'body' : [plie.multitext( choices=[
-                                        plie.text(text = 'option1', callout=nested_view),
-                                        plie.text(text = 'option2', callout=option2_func,)],
+                                        plie.text(text ='option1', callout=nested_view),
+                                        plie.text(text ='option2', callout=option2_func, )],
                             stacking='vertical'),
             plie.text(text = SOME_lONG_TEXt, justify='centered'),
             ],
-    'footer' : plie.text(text = 'status bar'),
+    'footer' : plie.text(text ='status bar'),
     'util' : {'handles_input' : body.0},
 
 }
@@ -199,4 +199,145 @@ What I like about this method:
 What I don't like about this method:
     * The view dictionary has potential for getting very complicatedly nested
     * plie.text has a possibility of getting very complex
+"""
+
+
+
+"""
+Method 4: examining string compositing, the dict that gets rendered
+
+"""
+
+def plie.text(text='', callout=None, justify='left', position='centered', size = (20,40)):
+    _text = text
+    _position = 'centered'
+# ...
+
+"""
+Notes on Method 4:
+    * Each view object can't handle terminal resizing during creation of a frame (should be short)
+        * Like other forms of input, a resize could call a Renderer.display()
+    * view objects are generators and yield a dict that represents the text on the screen in an (
+      x,y) matrix
+    * text handles three position types: centered, left, right
+        * centered:
+            * top left corner: term.width/2 - x_size/2, term.height/2 - y_size/2
+            * bottom right corner: term.width/2 + x_size/2, term.height/2 + y_size/2
+        * left:
+            * top left corner: 0, term.height/2 - y_size/2
+            * bottom right corner: x_size, term.height/2 + y_size/2
+        * right:
+            * top left corner: term.width - x_size, term.height/2 - y_size
+            * bottom left corner: term.width, term.height/2 + y_size
+        * doing it this way puts positioning into plie.text as something to handle, rather than
+        leaving that for plie.Renderer
+            * I don't know if I like that.
+            * like what about the case where position is set to 'left' and there's a border
+            around the whole window.
+            * one way to get around some of the complication, would be to use a bounds nameTuple
+              of format like bounds['l'], which would return the left most possible cell. So that
+              for 'left' justified mode, instead of using 0, it would use bounds['l'].
+              Plie.Renderer could handle supplying each view object with a bounds, and let the
+              view objects decide what it wants to do with the space in the bounds. Then upon
+              yielding, it could yield a dict the size of bounds, that plie.Render could
+              composite into the right position.
+"""
+
+
+
+"""
+Method 5:
+"""
+from collections import namedtuple
+
+# creates namedtuple with four fields, top, right, left, bottom
+Bounds = namedtuple('Bounds', ['top right bottom left'])
+
+b = Bounds(top=5, right=term.width-1, bottom=term.height-2, left=term.width-1) # example of setting
+
+def plie.text(text='lorem ipsum',
+              callout=None,
+              justify='left',
+              horizontal_position='centered',
+              vertical_position='centered',
+              bounds = None):
+    _text = text
+    _position = 'centered'
+# ...
+
+
+"""
+Notes on method 5:
+    * Plie.Renderer passes a Bounds namedtuple to each view object
+        * this tuple can have static attributes (like top=5) or can have window size dependent
+         attributes (like right=term.width-1). This was when the screen changes size the view
+         object can intelligently adjust its size.
+    * view objects yield dicts of size Bounds, leaving compositing and final positioning up to
+      plie.Renderer
+    * each view object is in it's own little world essentially, limited to the size of Bounds,
+      but with free reign over what happens within Bounds.
+    * Positioning in this method:
+        * centered:
+            * call to blessed.Terminal.center(a_line, width=Bounds[right])
+
+Issues and questions:
+    * Does bounds need to be top,right,bottom,left or could it just get away with width,height
+        * I think width,height might be fine?
+            * if plie.Renderer handles all the positioning, and so while rendering might render
+              0,0 of some view object at actually 3,3 of terminal space, then each view object
+              only needs a width,height
+            *
+
+"""
+
+"""
+Method 6: Renderer calling format updates
+"""
+
+layout_view = {
+    'header' : plie.text(text='title bar'),
+    'styles' : plie.border(border_style='heavy'),
+    'body' : [plie.multitext( choices=[
+                                        plie.text(text ='option1', callout=nested_view),
+                                        plie.text(text ='option2', callout=option2_func, )],
+                            stacking='vertical'),
+            plie.text(text = SOME_lONG_TEXt, justify='centered'),
+            ],
+    'footer' : plie.text(text ='status bar'),
+    'util' : {'handles_input' : body.0},
+
+}
+
+
+def nested_view(renderer):
+    changes_view = {
+        'body' : plie.text(text = TEXT_TO_DISPLAY_ON_THE_NESTED_VIEW),
+        'util' : {'blank' : True}
+    }
+    renderer.add(changes_view) # add a new view dict to the stack
+    r.display()
+    time.sleep(1)
+    return
+
+from blessed import Terminal
+from collections import namedtuple
+
+TerminalSize = namedtuple('TerminalSize', ['width height'])
+
+def run()
+    term = Terminal()
+    with term.fullscreen():
+        size = TerminalSize(width=term.width, height=term.height)
+        r = Renderer(size=size, view=layout_view)
+        with Input as input:
+            r.display(input)
+
+
+"""
+Notes on method 6:
+    * plie.Renderer.display is a wrapper around something like plie.Renderer.forumulate,
+    formulate returns a string that could be printed to cover the entire terminal, display just
+    clears the display, and then prints that string.
+        * This makes it easy to test plie.Renderer since one can just string match, as opposed to
+          trying to read the terminal or some other hack like that.
 """
