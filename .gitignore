@@ -1,6 +1,6 @@
 
 .idea
-docs/_build/
+docs/_build/doctrees/
 
 *.pyc
 
@@ -13,3 +13,13 @@ experimental/.ipynb_checkpoints/*
 
 
 experimental/Blessed_fullscreen_editor.py
+
+*.js
+
+*.html
+
+*.html
+
+*.css
+
+.cache/v/cache/lastfailed
