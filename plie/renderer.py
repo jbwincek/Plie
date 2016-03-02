@@ -7,11 +7,19 @@ class Renderer():
         self.size = size
         self.dict = {}
     def formulate(self):
+        """ Turns the internal dictionary into a string for rendering.
+
+        Returns: A string that could render the whole screen if printed.
+        """
         output_list = []
         for y in range(self.size[1]):
             if y > 0:
                 output_list.append('\n')
             output_list.extend([self.dict.get((x, y), ' ') for x in range(self.size[0])])
         return ''.join(output_list)
+
     def display(self):
+        pass
+
+    def add_view(self):
         pass

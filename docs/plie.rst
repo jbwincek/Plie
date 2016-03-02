@@ -2,29 +2,16 @@ Plié API Reference
 ==================
 
 .. toctree::
-   :maxdepth: 3
-
-plie.helper_functions module
-----------------------------
-
-.. automodule:: plie.helper_functions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-plie.plie module
-----------------
-
-.. automodule:: plie.plie
-    :members:
-    :undoc-members:
-    :show-inheritance:
+    :maxdepth: 3
 
 
-Module contents
----------------
+plie module
+-----------
 
-.. automodule:: plie
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. :py:module:: plie
+
+   .. :py:class:: Renderer
+
+   .. :py:class:: Text
+
+
