@@ -22,7 +22,15 @@ Glossary
         referenced in the callout will be called.
 
     **Multitext**:
-        a sequence of text objects for creating menus
+        A sequence of text objects for creating menus
+
+    **Cell**:
+        A single character in the grid of characters that make up the terminal. The base unit of
+        terminal space.
+
+    **Cell Based Representation**:
+        Many cells arranged in a grid, like a 2D matrix, also sometimes referred to as the
+        screen-space representation.
 
 
 

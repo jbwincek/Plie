@@ -138,7 +138,7 @@ Notes on method 2:
           converted to an int). Throw an error if any of that goes wrong.
         * means there will have to be a table of definitive defaults, though it seems like it
           will follow the rule of thumb that it takes up the full space where ever possible,
-          except for headers and footers which default to a height of 1. pip3 
+          except for headers and footers which default to a height of 1. pip3
 
 
 """
