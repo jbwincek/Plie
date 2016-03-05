@@ -91,3 +91,54 @@ Issues and questions:
 
 
 """
+
+"""
+Method 2: examining the use of percentages in bounds labeling
+"""
+
+from collections import namedtuple
+
+Bounds = namedtuple('Bounds', 'width height')
+Position = namedtuple('Position', 'vertical horizontal')
+
+a_view = {'header': {
+                        'bounds': Bounds(width='100%', height=1),
+                        'view_object': plie.Text('title text')
+                        },
+             'body': {
+                        'bounds': Bounds(width='100%', height='50%'),
+                        'view_object' : plie.Text('some text\n second line', justify='centered'),
+                        'positioning' : Position(vertical='centered', horizontal='centered')
+                        },
+            'footer': {
+                        'bounds': Bounds(width='100%', height=2),
+                        'view_object' : plie.Text('The footer, \n Footer's second line)
+                        },
+            'util' : {'handles_input': 'body'},
+            'styles' : {'body':plie.border(border_style='rounded')}
+            }
+
+
+
+
+"""
+Notes on method 2:
+    * preliminary side notes:
+        *'bounds' and 'positioning' only need tuple-likes, but namedtuples are strongly recommended
+        * a_view could be any variable name
+        *
+    * utilizes percentages for width and height in spots:
+        * all view fields have a default size, like for a header 100% wide of the terminal width's
+          and 1 cell tall.
+        * The percentages can be modified with +n or -n where n is the number of cells to trim
+          off or add to the percentage. The regex \d{1,3}%([-+]\d+)* is used for validating the
+          strings. Then it looks if there's anything after the % sign, if there is, validate that it
+          is a plus or minus, remember it, then validate that the next number can be converted to an
+          integer. (all of that is already done by the regex, so it only needs to be parsed and
+          converted to an int). Throw an error if any of that goes wrong.
+        * means there will have to be a table of definitive defaults, though it seems like it
+          will follow the rule of thumb that it takes up the full space where ever possible,
+          except for headers and footers which default to a height of 1. pip3 
+
+
+"""
