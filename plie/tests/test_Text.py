@@ -35,6 +35,7 @@ def test_bounds_needed_or_else_error():
 
 def test_string_to_cells_basic():
     """ Tests to make sure text objects are initialized well.
+    This also tests left justification.
     """
     four_by_four_test_string = '123456789abcdefg'
     w_val, h_val = 4, 4
@@ -55,4 +56,10 @@ def test_center_justify():
         assert cells.get((0, row_num), ' ') == ' '
         assert cells.get((4, row_num), ' ') == ' '
 
-
+def test_right_justify():
+    right_justify_test_string = 'abc def ghi jkl'
+    b = Bounds(width=4, height=4)
+    t = plie.Text(right_justify_test_string, bounds=b, justify='right')
+    cells = t.display()
+    for row_num in range(b.height):
+        assert cells.get((3,row_num), ' ') != ' '

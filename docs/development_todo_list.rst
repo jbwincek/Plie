@@ -20,7 +20,7 @@ Format:
             [d][t][i] basic functionality
                 [d][t][i] left justify
                 [d][t][i] centered
-                [d][ ][ ] right justify
+                [d][t][i] right justify
             [ ][ ][ ] speed improvements
 
     [ ][ ][ ] Renderer
