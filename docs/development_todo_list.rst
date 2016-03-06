@@ -16,6 +16,12 @@ Format:
             [ ][ ][ ] text update
             [ ][ ][ ] bounds update
             [ ][ ][ ] generic update
+        [ ][ ][ ] display
+            [d][t][i] basic functionality
+                [d][t][i] left justify
+                [d][t][i] centered
+                [d][ ][ ] right justify
+            [ ][ ][ ] speed improvements
 
     [ ][ ][ ] Renderer
         [ ][t][i] init

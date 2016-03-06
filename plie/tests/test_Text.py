@@ -1,5 +1,8 @@
 import plie
 import pytest
+from collections import namedtuple
+
+Bounds = namedtuple('Bounds', 'width height')
 
 def test_initialization():
     """
@@ -9,8 +12,6 @@ def test_initialization():
     """
     w_val = 20
     h_val = 30
-    from collections import namedtuple
-    Bounds = namedtuple('Bounds', 'width height')
     bounds = Bounds(width=w_val, height=h_val)
     t = plie.Text('some text', bounds=bounds)
     assert isinstance(t, plie.Text)
@@ -38,8 +39,20 @@ def test_string_to_cells_basic():
     four_by_four_test_string = '123456789abcdefg'
     w_val, h_val = 4, 4
     t = plie.Text(four_by_four_test_string, bounds=(w_val,h_val))
-    cells = t._dump_cells()
+    cells = t.display()
     assert cells[(0,0)] == '1' # first row
     assert cells[(1,0)] == '2' # checking order in first row
     assert cells[(2,0)] == '3' # continuing that
     assert cells[(3,3)] == 'g' # checking last cell in matrix
+
+def test_center_justify():
+    center_justify_test_string = 'abc def ghi'
+    b = Bounds(width=5, height=5)
+    t = plie.Text(center_justify_test_string, bounds=b, justify='centered')
+    cells = t.display()
+    for row_num in range(b.height):
+        # check the edge columns that they're blank/empty
+        assert cells.get((0, row_num), ' ') == ' '
+        assert cells.get((4, row_num), ' ') == ' '
+
+

@@ -25,8 +25,9 @@ class Text():
         self.text = text
         self.callout = callout
         self.justify = justify
+        self.cells = {}
         try:
-            # preferred method for handling bounds (as a namedtuple
+            # preferred method for handling bounds (as a namedtuple)
             self.width = bounds.width
             self.height = bounds.height
         except AttributeError:
@@ -36,12 +37,9 @@ class Text():
                 self.height = bounds[1]
             else:
                 raise AttributeError('bounds must be specified')
-        self.cells = {}
-        if text:
-            self._string_to_cells()
 
 
-    def update(self, bounds=None, text=None, **kwargs):
+    def update(self, bounds:Sequence=None, text:str=None, **kwargs):
         """ For changing internal state, including updating the text to display.
 
         update() accepts **kwargs, so any keyword argument passed during initialization can be
@@ -59,22 +57,11 @@ class Text():
         strings as the values.
 
         """
-        pass
-
-    def _string_to_cells(self, string:str = ''):
-        """ Transform a formatted string into the internal cell based representation
-
-        Args:
-            string: The text string to transform into the internal dictionary representation
-        """
-        # dictionary of string functions for justifying text
         operation = {'left': partial(str.ljust),
                      'centered': partial(str.center),
                      'right': partial(str.rjust)}
-        if not string:
-            string = self.text
 
-        lines = wrap(string, self.width)
+        lines = wrap(self.text, self.width)
         formatted = []
         for line in lines:
             # apply the appropriate string method to each line
@@ -83,7 +70,10 @@ class Text():
         # Add each cell to the dictionary
         for y, line in enumerate(formatted):
             for x, char in enumerate(line):
-                self.cells[(x,y)] = char
+                self.cells[(x, y)] = char
+
+        return self.cells
+
 
     def _update_by_cell(self, cell:tuple, char:str ):
         """ Update a particular cell in the internal dictionary
@@ -94,9 +84,3 @@ class Text():
 
         """
         pass
-
-    def _dump_cells(self):
-        """
-        Returns: internal cell dict for testing purposes
-        """
-        return self.cells
