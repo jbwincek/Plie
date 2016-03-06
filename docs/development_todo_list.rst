@@ -32,9 +32,10 @@ Format:
         [ ][ ][ ] add_view
         [ ][ ][ ] composite
 
-    [ ][ ][ ] View
-        [ ][ ][ ] Styles
-        [ ][ ][ ] Util
+    [d][ ][ ] View
+        [d][ ][i] basic init
+        [ ][ ][ ] View repr returns a valid view dict
+        [ ][ ][ ] Section repr returns a valid section dict
 
     [ ][ ][ ] Event handling
 

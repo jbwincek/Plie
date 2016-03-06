@@ -142,3 +142,40 @@ Notes on method 2:
 
 
 """
+
+"""
+Method 3: view as a class
+"""
+
+a_view = View()
+a_view.header = {
+    'bounds': Bounds(width='100%', height=1),
+    'view_object': plie.Text('title text')
+}
+a_view.body = {
+    'bounds': Bounds(width='100%', height='50%'),
+    'view_object': plie.Text('some text\n second line', justify='centered'),
+    'positioning': Position(vertical='centered', horizontal='centered'),
+    'styles': [plie.border(border_style='rounded']
+}
+a_view.footer = {
+    'bounds': Bounds(width='100%', height=2),
+    'view_object': plie.Text('The footer, \n Footer's second line)
+}
+a_view.util = {'handles_input': 'body'},
+
+
+"""
+Notes on method 3:
+    * Using a class gives a little more structure to the user automatically, so less to remember.
+    * But using a class like this also makes it take up more space/lines
+    * Could more be refactored into classes?
+        * what about like a_view.body.view_object how would that work?
+            * this needs experimenting, see view_as_class_mockups.py
+        * if more was refactored into classes, could there still be a way to construct it such
+        that if someone wanted to use the dict style set up to do it all in one go they could?
+            * probably, just have there be an optional argument in the initialization that would
+            convert the whole dict into the class property layout
+    * Styles have been moved to within each section
+
+"""
