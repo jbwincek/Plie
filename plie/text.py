@@ -3,7 +3,8 @@ from functools import partial
 from typing import Sequence
 from textwrap import wrap
 
-class Text():
+
+class Text:
     """ Text is the universal class for dealing with all single text snippets.
     Args:
         text: the text to display (can be changed later

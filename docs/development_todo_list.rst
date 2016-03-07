@@ -36,6 +36,8 @@ Format:
         [d][ ][i] basic init
         [ ][ ][ ] View repr returns a valid view dict
         [ ][ ][ ] Section repr returns a valid section dict
+        [ ]   [ ] Decide whether View should start with an empty list
+                  for the body, or a list with one Section already in it.
 
     [ ][ ][ ] Event handling
 

@@ -1,7 +1,7 @@
 from blessed import Terminal
 
 
-class Renderer():
+class Renderer:
     def __init__(self, size=(10,10), view=None):
         self.term = Terminal
         self.size = size
