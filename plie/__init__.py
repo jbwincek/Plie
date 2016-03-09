@@ -1,6 +1,7 @@
 from .renderer import Renderer
 from .text import Text
 from .mutlitext import MultiText
+from .view import Section, View, Bounds, Position
 
 __title__ = 'plie'
 __version__ = '0.1.0'

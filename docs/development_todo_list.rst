@@ -38,8 +38,12 @@ Format:
         [ ][ ][ ] Section repr returns a valid section dict
         [ ]   [ ] Decide whether View should start with an empty list
                   for the body, or a list with one Section already in it.
+        [d][t][i] Sections count as False when empty (__bool__)
+        [ ][ ][ ] Write valid view dict specifying grammar
 
     [ ][ ][ ] Event handling
+        [ ]   [ ] Create mockup
+        [ ]   [ ] continue exploring ways to integrate multiple invent systems -cough- asyncio
 
     [ ][ ][ ] Docs
 
