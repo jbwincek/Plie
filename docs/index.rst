@@ -57,6 +57,7 @@ Other useful pages
    renderer
    text
    multitext
+   api_docs/modules
 
 **Plié is in early alpha currently, all publicly exposed names and attributes may change during
 alpha.**

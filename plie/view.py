@@ -1,5 +1,7 @@
+from collections import namedtuple
 Bounds = namedtuple('Bounds', 'width height')
 Position = namedtuple('Position', 'vertical horizontal')
+
 
 class Section:
     """ An organizational class, helps define the structure of View"""
@@ -37,8 +39,6 @@ class Section:
             return False
         else:
             return True
-
-
 
 
 class View:

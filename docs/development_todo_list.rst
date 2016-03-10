@@ -12,10 +12,11 @@ Format:
 
     [ ][ ][ ] Text
         [d][t][i] init
-        [ ][ ][ ] update
-            [ ][ ][ ] text update
-            [ ][ ][ ] bounds update
+        [d][ ][ ] update
+            [d][ ][i] text update
+            [d][ ][i] bounds update
             [ ][ ][ ] generic update
+        [ ]   [ ] decide how to handle newlines in Text fields (textwrap.wrap drops them by default
         [ ][ ][ ] display
             [d][t][i] basic functionality
                 [d][t][i] left justify
@@ -23,14 +24,15 @@ Format:
                 [d][t][i] right justify
             [ ][ ][ ] speed improvements
 
-    [ ][ ][ ] Renderer
-        [ ][t][i] init
-        [ ][ ][ ] formulate
+    [ ][ ][i] Renderer
+        [d][t][i] init
+        [d][ ][i] formulate
             [d][t][i] basic formulate (only one char fill)
-            [ ][ ][ ] advanced formulate (works with real text objects)
-        [ ][ ][ ] display
-        [ ][ ][ ] add_view
-        [ ][ ][ ] composite
+            [d][ ][i] advanced formulate (works with real text objects)
+        [d][ ][i] display
+        [d][ ][i] add_view
+            [ ][ ][ ] inserting of a blank view underneath it if needed
+        [d][ ][i] composite
 
     [d][ ][ ] View
         [d][ ][i] basic init

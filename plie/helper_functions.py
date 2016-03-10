@@ -51,6 +51,8 @@ def borderer(array=None, width=40, height=30, border_style='default'):
 
     """
 
+    # TODO update this to use cell dictionaries instead of relying on curtsies
+
     if not array:
         box_array = fsarray([' ' * width for _ in range(height)])
     else:
