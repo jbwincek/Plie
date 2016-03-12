@@ -1,6 +1,5 @@
 from collections import namedtuple
 from functools import partial
-from typing import Sequence
 from textwrap import wrap
 
 
