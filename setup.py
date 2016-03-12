@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='plie',
     packages=['plie'],
-    version='0.0.1',
+    version='0.2.0',
     desciption='A TUI interface library built upon Curtsies',
     long_description=open('README.rst').read(),
     author='Jessie Wincek',
@@ -20,6 +20,6 @@ setup(
     ],
     keywords='TUI Library terminal',
     install_requires=[
-        'curtsies',
+        'blessed',
     ],
 )
