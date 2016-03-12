@@ -33,6 +33,8 @@ Format:
         [d][ ][i] add_view
             [ ][ ][ ] inserting of a blank view underneath it if needed
         [d][ ][i] composite
+        [d][t][i] _extract_bounds_information
+            [ ] decide if bounding boxes can be negative, and what that would mean
 
     [d][ ][ ] View
         [d][ ][i] basic init
@@ -42,6 +44,7 @@ Format:
                   for the body, or a list with one Section already in it.
         [d][t][i] Sections count as False when empty (__bool__)
         [ ][ ][ ] Write valid view dict specifying grammar
+        [ ]   [ ] Decide whether add_view should be replaced by a property of View.view_stack
 
     [ ][ ][ ] Event handling
         [ ]   [ ] Create mockup

@@ -131,16 +131,25 @@ Notes on method 2:
         * all view fields have a default size, like for a header 100% wide of the terminal width's
           and 1 cell tall.
         * The percentages can be modified with +n or -n where n is the number of cells to trim
-          off or add to the percentage. The regex \d{1,3}%([-+]\d+)* is used for validating the
-          strings. Then it looks if there's anything after the % sign, if there is, validate that it
-          is a plus or minus, remember it, then validate that the next number can be converted to an
-          integer. (all of that is already done by the regex, so it only needs to be parsed and
-          converted to an int). Throw an error if any of that goes wrong.
+          off or add to the percentage. The regex \d{1,3}%([-+]\d+)* is used (see note below) for
+          validating the strings. Then it looks if there's anything after the % sign, if there is,
+          validate that it is a plus or minus, remember it, then validate that the next number
+          can be converted to an integer. (all of that is already done by the regex, so it only
+          needs to be parsed and converted to an int). Throw an error if any of that goes wrong.
         * means there will have to be a table of definitive defaults, though it seems like it
           will follow the rule of thumb that it takes up the full space where ever possible,
           except for headers and footers which default to a height of 1. pip3
 
-
+        * (NOTE: this regex has been updated to \d{1,4}%( *[-+] *\d+)* to account for spaces
+        before and after the + or - sign.
+        * (NOTE: this regex has subsequently been updated again to be:
+            (?P<percent>\d{1,4})%( *(?P<operator>[-+]) *(?P<amount>\d+)){0,1}
+            * Notes about this regex, because it gets complicated:
+                * the ?P<some_label> syntax means that if it get matched, the python match object
+                will have an attribute with some_label for easily accessing that part.
+                * this regex matches any size precentage up to 9999%, and an arbitrarily large
+                subtraction or addition of cells to the end, including spaces before or after the
+                operator, but it does not handle spaces between the percent number and % sign
 """
 
 """
@@ -177,5 +186,53 @@ Notes on method 3:
             * probably, just have there be an optional argument in the initialization that would
             convert the whole dict into the class property layout
     * Styles have been moved to within each section
+
+"""
+
+"""
+Method 4: not really a method, but notes on handling multiple body elements
+
+* (1) What we have currently:
+    * header takes up a specific amount of space, subtracts that from space_left_over_for_body
+    * footer takes up a specific amount of space, subtracts that from space_left_over_for_body
+    * body then takes up the space_left_over_for_body amount of space
+    * only one body element is possible with this method
+* (2) where to go next:
+    * header: use information from section.bounds to figure out how much space is needed,
+    then subtract that from space_left_over_for_body
+    * footer: use information from section.bounds to figure out how much space is needed,
+    then subtract that from space_left_over_for_body
+    * body: body then takes up the space_left_over_for_body amount of space
+* (3) Then the next step is:
+    * header: records height in from_top_offset
+    * body:
+        * iterate through each body element
+        * use information from section.bounds to figure out how much space is needed,
+        then subtract that from space_left_over_for_body, place this body element at
+        from_top_offset, but respecting positioning (1), then it's height to from_top_offset
+
+* Isssues with the last step:
+    * This doesn't allow for horizontally arrayed text objects, like a paned window view
+    * Should positioning just be absolute? Like specify an upper left corner and a bounds? Then
+    just composite overlapping things (aka, the fuckit let the user handle it method)
+        * This keeps the renderer and the parsing syntax simple, since with some flow formatting
+        layout html div esque thing creating rules for how exactly things should go would be
+        complicated and require a lot of decisions.
+        * But for simple layouts, it would probably add boilerplate and complication, as well as
+        going against the paradigms developed lately.
+        * a potential work around would be for section to contain a top_left_corner style
+        attribute that would let the user explicitly specify the location, this could be used to
+        overload the default layout engine thing.
+        * I don't even like the idea of a layout engine, maybe it's what is needed, but sheesh,
+        seems like a can of worms.
+
+* What do I want with regards to layout, views and rendering
+    * simple for the user for basic layouts
+    * flexibility to create precise or complex layouts if wanted
+
+
+* Instead of step (3) coming after step (2), a revision could be made so that
+space_left_over_for_body has both a height and width dimension. That seems like it'll open new
+options in a good way.
 
 """

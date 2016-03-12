@@ -40,6 +40,10 @@ class Section:
         else:
             return True
 
+    def __repr__(self):
+        return 'Section(bounds=%r, positioning=%r, view_object=%r, styles=%r)' % (
+            self.bounds, self.positioning, self.view_object, self.styles)
+
 
 class View:
     """ Views are an organizational structure that contain all the view objects.
@@ -132,3 +136,10 @@ class View:
             util = view_dict.get('util', False)
             if util:
                 self.util = util
+
+    def __iter__(self):
+        """ Iterate through all the contained view_objects
+
+        Returns: tuple: (view_object.as_cells, bounds)
+
+        """

@@ -41,6 +41,14 @@ class Text:
                 self.width = 0
                 self.height = 0
 
+    def __repr__(self):
+        return 'Text(text=%r, callout=%r, justify=%r, bounds=%r)' % (self.text, self.callout,
+                                                               self.justify, (self.width,
+                                                                              self.height))
+    def __str__(self):
+        # TODO decide if this should have styling and formatting appplie to it
+        return self.text
+
     def update(self, bounds=None, text=None, **kwargs):
         """ For changing internal state, including updating the text to display.
 
@@ -63,6 +71,12 @@ class Text:
                     pass
         if text:
             self.text = text
+
+        if kwargs.get('callout', False):
+            self.callout = kwargs['callout']
+
+        if kwargs.get('justify', False):
+            self.justify = kwargs['justify']
 
 
     def as_cells(self):

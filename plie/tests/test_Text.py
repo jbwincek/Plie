@@ -29,9 +29,11 @@ def test_bounds_as_tuple():
     assert t.width == w_val
     assert t.height == h_val
 
-def test_bounds_needed_or_else_error():
-    with pytest.raises(AttributeError):
-        t = plie.Text('some text')
+
+# This test has been depreciated, as Text now manages without bounds
+# def test_bounds_needed_or_else_error():
+#     with pytest.raises(AttributeError):
+#         t = plie.Text('some text')
 
 def test_string_to_cells_basic():
     """ Tests to make sure text objects are initialized well.
@@ -40,7 +42,7 @@ def test_string_to_cells_basic():
     four_by_four_test_string = '123456789abcdefg'
     w_val, h_val = 4, 4
     t = plie.Text(four_by_four_test_string, bounds=(w_val,h_val))
-    cells = t.display()
+    cells = t.as_cells()
     assert cells[(0,0)] == '1' # first row
     assert cells[(1,0)] == '2' # checking order in first row
     assert cells[(2,0)] == '3' # continuing that
@@ -50,7 +52,7 @@ def test_center_justify():
     center_justify_test_string = 'abc def ghi'
     b = Bounds(width=5, height=5)
     t = plie.Text(center_justify_test_string, bounds=b, justify='centered')
-    cells = t.display()
+    cells = t.as_cells()
     for row_num in range(b.height):
         # check the edge columns that they're blank/empty
         assert cells.get((0, row_num), ' ') == ' '
@@ -60,6 +62,6 @@ def test_right_justify():
     right_justify_test_string = 'abc def ghi jkl'
     b = Bounds(width=4, height=4)
     t = plie.Text(right_justify_test_string, bounds=b, justify='right')
-    cells = t.display()
+    cells = t.as_cells()
     for row_num in range(b.height):
         assert cells.get((3,row_num), ' ') != ' '

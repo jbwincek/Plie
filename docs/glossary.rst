@@ -4,7 +4,8 @@ Glossary
 .. glossary::
 
     **View**:
-        A dictionary containing items (view objects) to render to the screen)
+        An organizational structure for arranging view objects on the screen. Can be constructed
+        with a dictionary all at once or by constructing it piecewise.
 
     **Field**:
         The various sections of a view. 'header', 'body', 'footer', 'styles' and 'util' are all fields.

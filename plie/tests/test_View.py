@@ -1,0 +1,20 @@
+import plie
+
+def test_section_empty_counts_as_false():
+    section = plie.Section()
+    if not section:
+        assert True
+    else:
+        raise AssertionError
+
+def test_section_filled_counts_as_true():
+    section = plie.Section(bounds=(25,25))
+    if section:
+        assert True
+    else:
+        raise AssertionError
+
+# def test_section_repr():
+#     from plie import Section
+#     evaluabte = "Section(bounds=(25,25), positioning=('centered', centered)®"
+
