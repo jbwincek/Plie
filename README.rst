@@ -2,47 +2,81 @@
 Plié: A Python Terminal User Interface Library
 ==============================================
 
-Plié adds helper functions and context managers to `Curtsies`_ for creating more complex TUIs.
+Plié helps you create interactive complexly laid out terminal applications with ease.
 
-.. _Curtsies: https://github.com/thomasballinger/curtsies
 
-Ever wish creating a bordered screen in a terminal with a title only took a few lines of Python,
-now it does. Lets see:
 
 .. code-block:: Python
 
-    from curtsies import FullscreenWindow, FSArray  # Plié is built on curtsies
-    from plie import border, TitleBar
+    import plie
     import time
 
-    def run():
-        with FullscreenWindow() as win:  # Create a window to render to
-            base_array = FSArray(15, 30)  # Arrays are where all the text goes
-            with border(base_array):  # add a border onto the array we just made
-                with TitleBar(base_array, text='The Title') as title_bar: # add a title as well
-                    win.render_to_terminal(base_array) # render the array
-                    time.sleep(1.5)  # if this wasn't here, all this would happen in a flash
-                    title_bar.text = 'New Updated Title' # change the title text
-                    win.render_to_terminal(base_array)
-                    time.sleep(1.5)
 
-One of my main goals with Plié is to keep it simple, straight forward and Pythonic.
+    a_view_dict = {
+        'header' : {
+            'bounds': plie.Bounds(width='100%', height=1),
+            'view_object': plie.Text('title text')
+            },
+        'body' : {
+            'bounds': plie.Bounds(width='100%', height='50%'),
+            'view_object': plie.Text('some text second line', justify='centered'),
+            'positioning': plie.Position(vertical='centered', horizontal='centered'),
+            'styles': []
+            },
+        'footer' : {
+            'bounds': plie.Bounds(width='100%', height=2),
+            'view_object': plie.Text("The footer...")
+            },
+        'util' : {'handles_input': 'body'}
+    }
+
+    a_view = plie.View(a_view_dict)
+
+    renderer = plie.Renderer(view=a_view)
+    renderer.display()
+    time.sleep(2)
+
+    a_view.body[0].view_object.update(text='look, the text changed')
+    renderer.display()
+    time.sleep(1)
+
+
+My main goals with Plié is to keep it simple yet highly flexible, intuitive and Pythonic.
+
+With those goals though comes a willingness to redesign the public facing API significantly for
+the purpose of increasing intuitiveness or decreasing boilerplate until at least the 1.0 release.
 
 Currently implemented features:
-    * border: creates a border around an array
-    * TitleBar: creates a title at the top of an array
-    * array_insert: no more dealing with matching array sizes to slices.
+-------------------------------
+    * Basic layouts, with a header, body and footer
+    * rendering text to the screen, and updating text
+    * formatting helpers for fitting text in limited or tall spaces
 
 Planned features:
+-----------------
     * popup windows that can display text messages for a specified amount of time.
     * menus which contain multiple selectable items for interface control flow.
-    * text flow helpers
-    * compositing manager
     * support for different border styles
-    * footer update-able text like the title
+    * solid asyncio event integration for handling a variety of events, including keyboard,
+    timers and voice commands (via `speech_recognition`_)
+
+.. _speech_recognition: https://pypi.python.org/pypi/SpeechRecognition/
+
+Similar projects and libraries
+------------------------------
+    * `Blessings`_ by Eric Rose
+    * `Blessed`_ by Jeff Quast
+    * `Curtsies`_ by Thomas Ballinger (the spiritual predecessor to Plié and where the name
+    derives from)
+    * `npyscreen`_ by Nicholas Cole
+    * `urwid`_ by Ian Ward et al
 
 
+.. _Blessings: https://pypi.python.org/pypi/blessings
+.. _Blessed: https://pypi.python.org/pypi/blessed
+.. _Curtsies: https://github.com/thomasballinger/curtsies
+.. _npyscreen: https://pypi.python.org/pypi/npyscreen/
+.. _urwid: http://urwid.org/
 
 
-**Plié is in early alpha currently, all publicly exposed names and attributes may change during
-alpha.**
+**Plié is in early alpha currently**

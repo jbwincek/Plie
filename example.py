@@ -25,3 +25,15 @@ a_view = plie.View(a_view_dict)
 renderer = plie.Renderer(view=a_view)
 renderer.display()
 time.sleep(2)
+a_view.body[0].view_object.update(text='look, the text changed')
+renderer.display()
+time.sleep(1)
+
+a_view.body[0].view_object.update(text="going left soon")
+renderer.display()
+time.sleep(1)
+
+
+a_view.body[0].view_object.update(justify='left')
+renderer.display()
+time.sleep(2)

@@ -5,7 +5,7 @@ setup(
     name='plie',
     packages=['plie'],
     version='0.2.0',
-    desciption='A TUI interface library built upon Curtsies',
+    desciption='A TUI interface library built upon Blessed',
     long_description=open('README.rst').read(),
     author='Jessie Wincek',
     url='https://github.com/jbwincek/Plie',
