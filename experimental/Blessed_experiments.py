@@ -87,6 +87,11 @@ def experiment_5():
     print(output)
 
 
+def experiment_6():
+    with term.cbreak():
+        kb = True
+        while kb != 'q':
+            kb = term.inkey()
+            print('key: {}, name: {}'.format(kb, kb.name))
 
-
-experiment_5()
+experiment_6()

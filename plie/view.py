@@ -4,30 +4,30 @@ Position = namedtuple('Position', 'vertical horizontal')
 
 
 class Section:
-    """ An organizational class, helps define the structure of View"""
+    """ An organizational class, helps define the structure of View
+
+    Args:
+        bounds: A tuple-like, containing width and height of the section, can be formatted either
+            as an integer pair, or a pair of strings representing percentages example:
+            ``(25, 40)`` or ``('100%', '50%')``
+
+        positioning: A tuple-like, containing a pair of strings describing how the Section
+            should be positioned. `left`, `centered`, `right` are the three valid options
+            for horizontal positioning. `top`, `centered`, 'bottom' are the three valid
+            options for vertical positioning.
+            example: `('left', 'centered')` or as a namedtuple:
+                     Position(vertical='bottom', horizontal='right')
+
+        view_object: either a Text or MultiText view_object (this is what actually gets
+            rendered), the Renderer handles all the bounds specifying in the view_object call,
+            so only parameters like text, and justify are appropriate.
+
+        styles: a list of styles to apply to the view_object
+
+    Returns: an initialized Section object
+    """
 
     def __init__(self, bounds=(), positioning=None, view_object=None, styles=[]):
-        """
-        Args:
-            bounds: A tuple-like, containing width and height of the section, can be formatted
-                    either as an integer pair, or a pair of strings representing percentages
-                    example: `(25, 40)` or `('100%', '50%')`
-
-            positioning: A tuple-like, containing a pair of strings describing how the Section
-                    should be positioned. `left`, `centered`, `right` are the three valid options
-                    for horizontal positioning. `top`, `centered`, 'bottom' are the three valid
-                    options for vertical positioning.
-                    example: `('left', 'centered')` or as a namedtuple:
-                             Position(vertical='bottom', horizontal='right')
-
-            view_object: either a Text or MultiText view_object (this is what actually gets
-                    rendered), the Renderer handles all the bounds specifying in the view_object call,
-                    so only parameters like text, and justify are appropriate.
-
-            styles: a list of styles to apply to the view_object
-
-        Returns: an initialized Section object
-        """
         self.bounds = bounds
         self.positioning = positioning
         self.view_object = view_object
@@ -47,6 +47,9 @@ class Section:
 
 class View:
     """ Views are an organizational structure that contain all the view objects.
+
+    Args:
+        view_dict: a well formed dictionary describing the components of the view to create
 
     Views can be constructed piece wise by setting individual properties, or they can
     be constructed by passing a well formed view dict to the constructor.

@@ -2,6 +2,7 @@ from blessed import Terminal
 from plie.view import Bounds
 import re
 
+
 class Renderer:
     """ The thing that translates Views and View objects into actual text on the screen.
 
@@ -11,6 +12,7 @@ class Renderer:
         view: a View instance
 
     """
+
     def __init__(self, size=None, view=None):
         """ Initialize the Renderer """
 
@@ -26,7 +28,7 @@ class Renderer:
         self.view_stack = []
         if view:
             self.add_view(view)
-        # regex's for bounds matching
+            # regex's for bounds matching
 
     def formulate(self):
         """ Turns the internal dictionary into a string for rendering.
@@ -58,10 +60,10 @@ class Renderer:
             view: a View instance to add to the internal stack of Views
 
         """
-
         self.view_stack.append(view)
+        self.update()
 
-    def composite(self, view_object_dict, position = (0,0), size = (0,0)):
+    def composite(self, view_object_dict, position=(0, 0), size=(0, 0)):
         """ given a view_object represented as a dictionary of cells of size and position, add that to
         the internal dict, at the correct position.
 
@@ -74,8 +76,7 @@ class Renderer:
         """
         for x, y in [(x, y) for y in range(size[1]) for x in range(size[0])]:
             # TODO verify that using a .get method with the stand in value of ' ' is right
-            self.dict[(x + position[0], y + position[1])] = view_object_dict.get((x,y), ' ')
-
+            self.dict[(x + position[0], y + position[1])] = view_object_dict.get((x, y), ' ')
 
     def update(self):
         """
@@ -86,21 +87,21 @@ class Renderer:
         space_left_over_for_body = self.term.height
         if view.header:
             header_size = (self.term.width, 1)
-            #TODO handle bounds (both percent and int style)
+            # TODO handle bounds (both percent and int style)
             view.header.view_object.update(bounds=header_size)
             self.composite(view.header.view_object.as_cells(),
-                            position=(0,0),
-                            size=header_size)
-            space_left_over_for_body -= header_size[1] # remove header height from allotted space
+                           position=(0, 0),
+                           size=header_size)
+            space_left_over_for_body -= header_size[1]  # remove header height from allotted space
 
         if view.footer:
             footer_size = (self.term.width, 1)
             # TODO handle bounds (both percent and int style)
             view.footer.view_object.update(bounds=footer_size)
             self.composite(view.footer.view_object.as_cells(),
-                           position=(0, self.term.height-1),
+                           position=(0, self.term.height - 1),
                            size=footer_size)
-            space_left_over_for_body -= footer_size[1] # remove footer height from allotted space
+            space_left_over_for_body -= footer_size[1]  # remove footer height from allotted space
 
         if view.body:
             body_size = (self.term.width, space_left_over_for_body)
@@ -111,27 +112,26 @@ class Renderer:
                            position=(0, 1),
                            size=body_size)
 
-
-
     def _insert_blanking_view(self):
         """ Adds a view to the stack of spaces to stop translucency
         """
         pass
 
-    def _extract_bounds_information(self, bounds_representation, available_space):
+    @staticmethod
+    def _extract_bounds_information(bounds_representation, available_space):
         """ Figures out bounding box size from a variety of input formats
-        
+
         Args:
-            bounds_representation: a representation of bounds which can be a number pair as a 
-            string or ints, or percentages as strings with optional addition and subtraction of 
+            bounds_representation: a representation of bounds which can be a number pair as a
+            string or ints, or percentages as strings with optional addition and subtraction of
             cells components
-            available_space: 50% takes up half the space of this quantity, used to translate the 
+            available_space: 50% takes up half the space of this quantity, used to translate the
             percentages into amount of cells
 
-        Returns: A Bounds namedtuple specifying in cells how big the thing passed to it would be. 
+        Returns: A Bounds namedtuple specifying in cells how big the thing passed to it would be.
 
         """
-        if isinstance(available_space,(tuple,list)):
+        if isinstance(available_space, (tuple, list)):
             # cast available space to a namedtuple if it is not
             available_space = Bounds(width=available_space[0], height=available_space[1])
         elif not isinstance(available_space, Bounds):
@@ -140,24 +140,24 @@ class Renderer:
         pattern = re.compile(r"(?P<percent>\d{1,4})%( *(?P<operator>[-+]) *(?P<amount>\d+)){0,1}")
 
         if isinstance(bounds_representation, Bounds):
-            if isinstance(bounds_representation.width, str):                      # 10% (+5) cases
-                width_match = re.match(pattern,bounds_representation.width)
+            if isinstance(bounds_representation.width, str):  # 10% (+5) cases
+                width_match = re.match(pattern, bounds_representation.width)
                 if width_match:
-                    width_percentage = float(width_match.group('percent'))*.01
+                    width_percentage = float(width_match.group('percent')) * .01
                     temp_width = round(available_space.width * width_percentage)
-                    if width_match.group('operator') and width_match.group('amount'): # 10%+5 cases
+                    if width_match.group('operator') and width_match.group('amount'):  # 10%+5 cases
                         if width_match.group('operator') == '+':
                             width = temp_width + int(width_match.group('amount'))
                         else:
                             width = temp_width - int(width_match.group('amount'))
-                    else:                                                             # 10% case
+                    else:  # 10% case
                         width = temp_width
                 else:
                     if bounds_representation.width[0] == '-':
                         raise ValueError('Negative percentages for bounds are not supported')
                     else:
                         raise ValueError('Could not find relevant information in width')
-            else:                                                                 # 40 case
+            else:  # 40 case
                 try:
                     width = int(bounds_representation.width)
                 except ValueError:
@@ -169,7 +169,8 @@ class Renderer:
                 if height_match:
                     height_percentage = float(height_match.group('percent')) * .01
                     temp_height = round(available_space.height * height_percentage)
-                    if height_match.group('operator') and height_match.group('amount'):  # 10%+5 cases
+                    if height_match.group('operator') and height_match.group(
+                            'amount'):  # 10%+5 cases
                         if height_match.group('operator') == '+':
                             height = temp_height + int(height_match.group('amount'))
                         else:
@@ -187,7 +188,7 @@ class Renderer:
                 except ValueError:
                     raise ValueError('bounds.height is not in a supported format: {}'.format(
                         bounds_representation.height))
-        else: # bounds is just a (num,num) pair of some sort or badly formatted
+        else:  # bounds is just a (num,num) pair of some sort or badly formatted
             try:
                 width = int(bounds_representation[0])
                 height = int(bounds_representation[1])
@@ -195,4 +196,3 @@ class Renderer:
                 raise ValueError('Bounds was not a comprehensible format')
 
         return Bounds(width=width, height=height)
-

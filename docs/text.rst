@@ -1,14 +1,12 @@
 Text
 ====
 
-.. py:class:: Text()
+.. py:currentmodule:: plie
 
-    All single and multiline text handling is done here.
-
-
-
-
-
+.. autoclass:: Text
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 .. toctree::
     :maxdepth: 2

@@ -1,10 +1,8 @@
 Plié: A Python Terminal User Interface Library
 ==============================================
 
-Plié adds helper functions and context managers to `Curtsies`_ for creating more complex TUIs. One
-of my main goals with Plié is to keep it simple, straight forward and Pythonic.
+Plié helps you create interactive complexly laid out terminal applications with ease.
 
-.. _Curtsies: https://github.com/thomasballinger/curtsies
 
 The broad strokes of Plié:
 **************************
@@ -22,25 +20,24 @@ with :class:`plie.Text` as it's items.
 :py:class:`plie.Renderer` is where all the action happens.
 
 
-Ever wish creating a bordered screen in a terminal with a title only took a few lines of Python,
-now it does. Lets see:
 
 
 
 Currently implemented features:
 -------------------------------
-    * border: creates a border around an array
-    * TitleBar: creates a title at the top of an array
-    * array_insert: no more dealing with matching array sizes to slices.
+    * Basic layouts, with a header, body and footer
+    * rendering text to the screen, and updating text
+    * formatting helpers for fitting text in limited or tall spaces
+
 
 Planned features:
 -----------------
     * popup windows that can display text messages for a specified amount of time.
     * menus which contain multiple selectable items for interface control flow.
-    * text flow helpers
-    * compositing manager
     * support for different border styles
-    * footer update-able text like the title
+    * solid asyncio event integration for handling a variety of events, including keyboard, timers and voice commands (via `speech_recognition`_)
+
+.. _speech_recognition: https://pypi.python.org/pypi/SpeechRecognition/
 
 
 Other useful pages
@@ -49,15 +46,14 @@ Other useful pages
 .. toctree::
    :maxdepth: 3
 
-   Plié development todo list <development_todo_list.rst>
-   _plie_depreciated
    plie
-   styles
-   glossary
    renderer
    text
    multitext
-   api_docs/modules
+   view
+   styles
+   glossary
+   Plié development todo list <development_todo_list.rst>
 
 **Plié is in early alpha currently, all publicly exposed names and attributes may change during
 alpha.**

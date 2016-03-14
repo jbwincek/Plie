@@ -1,4 +1,4 @@
-from plie.styles import BORDER_STYLE
+from styles import BORDER_STYLE
 
 
 def array_insert(insertable,

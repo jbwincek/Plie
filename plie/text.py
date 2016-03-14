@@ -4,24 +4,29 @@ from textwrap import wrap
 
 
 class Text:
-    """ Text is the universal class for dealing with all single text snippets. """
-    def __init__(self, text='', callout=None, justify='left', bounds=None):
-        """
-        Args:
+    """ Text is the universal class for dealing with all single text snippets.
+    Text helps with basic formatting, justification, word wrapping to the appropriate width and
+    acts as a way to contain a contain block of text for applying styles to it or developing a
+    layout.
+
+    Args:
         text: the text to display (can be changed later
-        callout: an attribute made available for storing an attribute, it is used
-                 if this Text object gets selected by some event.
-        justify: specifies which justification the text should have, options are:
-                 'left' where all the text aligns with the left edge,
-                 'centered' where all the text is centered in the middle of the,
-                            available space
-                 'right' where all the text aligns with the right edge
-        bounds: the bounding box for the Text object in screen space cells, will
-                be set automatically by Renderer usually
 
-        Returns: an initialized Text object
+        callout: an attribute made available for storing an attribute, it is used if this Text
+            object gets selected by some event.
+
+        justify: specifies which justification the text should have, options are:
+            'left' where all the text aligns with the left edge,
+            'centered' where all the text is centered in the middle of the, available space
+            'right' where all the text aligns with the right edge
+
+        bounds: the bounding box for the Text object in screen space cells, will be set
+            automatically by Renderer usually
+
+    Returns: an initialized Text object
 
         """
+    def __init__(self, text='', callout=None, justify='left', bounds=None):
         self.text = text
         self.callout = callout
         self.justify = justify
@@ -45,13 +50,13 @@ class Text:
                                                                self.justify, (self.width,
                                                                               self.height))
     def __str__(self):
-        # TODO decide if this should have styling and formatting appplie to it
+        # TODO decide if this should have styling and formatting appplied to it
         return self.text
 
     def update(self, bounds=None, text=None, **kwargs):
-        """ For changing internal state, including updating the text to display.
+        """For changing internal state, including updating the text to display.
 
-        update() accepts **kwargs, so any keyword argument passed during initialization can be
+        update() accepts ``**kwargs``, so any keyword argument passed during initialization can be
         passed again, to change the stored value.
 
         Returns: True if updating went well

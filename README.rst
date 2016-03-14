@@ -66,8 +66,7 @@ Similar projects and libraries
 ------------------------------
     * `Blessings`_ by Eric Rose
     * `Blessed`_ by Jeff Quast
-    * `Curtsies`_ by Thomas Ballinger (the spiritual predecessor to Plié and where the name
-    derives from)
+    * `Curtsies`_ by Thomas Ballinger (the spiritual predecessor to Plié and where the name derives from)
     * `npyscreen`_ by Nicholas Cole
     * `urwid`_ by Ian Ward et al
 
@@ -80,3 +79,4 @@ Similar projects and libraries
 
 
 **Plié is in early alpha currently**
+The files with mockup or variations there of in the filename in the ``Plie/experimental`` directory, contain writings and experiments on the creation of various components of Plié.
