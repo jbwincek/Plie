@@ -27,11 +27,9 @@ class Text:
 
         """
     def __init__(self, text='', callout=None, justify='left', bounds=None):
-        self.text = text
         self.callout = callout
         self.justify = justify
         self.cells = {}
-
         try:
             # preferred method for handling bounds (as a namedtuple)
             self.width = bounds.width
@@ -44,6 +42,10 @@ class Text:
             else:
                 self.width = 0
                 self.height = 0
+        if self.width:
+            self.text = '\n'.join(wrap(text, self.width, replace_whitespace=False))
+        else:
+            self.text = text
 
     def __repr__(self):
         return 'Text(text=%r, callout=%r, justify=%r, bounds=%r)' % (self.text, self.callout,
@@ -62,19 +64,10 @@ class Text:
         Returns: True if updating went well
         """
         if bounds:
-            try:
-                # preferred method for handling bounds (as a namedtuple)
-                self.width = bounds.width
-                self.height = bounds.height
-            except AttributeError:
-                if isinstance(bounds, (list, tuple)):
-                    # fall back if it's not a namedtuple, uses format (width, height)
-                    self.width = bounds[0]
-                    self.height = bounds[1]
-                else:
-                    pass
+            self._update_bounds(bounds)
         if text:
-            self.text = text
+            self.text = '\n'.join(wrap(text, self.width, replace_whitespace=False))
+
 
         if kwargs.get('callout', False):
             self.callout = kwargs['callout']
@@ -82,6 +75,12 @@ class Text:
         if kwargs.get('justify', False):
             self.justify = kwargs['justify']
 
+    @property
+    def lines(self):
+        """
+        Returns: the number of lines that the Text instance uses
+        """
+        return len(self.text.split('\n'))
 
     def as_cells(self):
         """ Translates the internal state and translates it into a screen-space cell dict of size
@@ -95,7 +94,7 @@ class Text:
                      'centered': partial(str.center),
                      'right': partial(str.rjust)}
 
-        lines = wrap(self.text, self.width, replace_whitespace=False)
+        lines = self.text.split('\n')
         formatted = []
         for line in lines:
             # apply the appropriate string method to each line
@@ -117,3 +116,16 @@ class Text:
 
         """
         pass
+
+    def _update_bounds(self, bounds):
+        try:
+            # preferred method for handling bounds (as a namedtuple)
+            self.width = bounds.width
+            self.height = bounds.height
+        except AttributeError:
+            if isinstance(bounds, (list, tuple)):
+                # fall back if it's not a namedtuple, uses format (width, height)
+                self.width = bounds[0]
+                self.height = bounds[1]
+            else:
+                pass

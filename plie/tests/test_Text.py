@@ -65,3 +65,21 @@ def test_right_justify():
     cells = t.as_cells()
     for row_num in range(b.height):
         assert cells.get((3,row_num), ' ') != ' '
+
+def test_lines():
+    """ Tests to make sure Text.line returns the correct number
+    """
+    four_by_four_test_string = '123456789abcdefg'
+    w_val, h_val = 4, 8
+    t = plie.Text(four_by_four_test_string, bounds=(w_val,h_val))
+    assert t.lines == 4
+
+def test_lines_after_updating():
+    """ Tests to make sure Text.line returns the correct number even after the
+    line number changes during an update
+    """
+    interim_test_string = '1234'
+    w_val, h_val = 4, 8
+    t = plie.Text(interim_test_string, bounds=(w_val,h_val))
+    t.update(text='123456789abcdefg')
+    assert t.lines == 4
