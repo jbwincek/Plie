@@ -87,7 +87,10 @@ class Renderer:
         space_left_over_for_body = self.term.height
         if view.header:
             header_size = (self.term.width, 1)
-            # TODO handle bounds (both percent and int style)
+            try:
+                header_size = self._extract_bounds_information(view.header.bounds, header_size)
+            except (KeyError, IndexError):
+                pass
             view.header.view_object.update(bounds=header_size)
             self.composite(view.header.view_object.as_cells(),
                            position=(0, 0),
@@ -96,7 +99,10 @@ class Renderer:
 
         if view.footer:
             footer_size = (self.term.width, 1)
-            # TODO handle bounds (both percent and int style)
+            try:
+                footer_size = self._extract_bounds_information(view.footer.bounds, footer_size)
+            except (KeyError, IndexError):
+                pass
             view.footer.view_object.update(bounds=footer_size)
             self.composite(view.footer.view_object.as_cells(),
                            position=(0, self.term.height - 1),
@@ -105,9 +111,11 @@ class Renderer:
 
         if view.body:
             body_size = (self.term.width, space_left_over_for_body)
-            # TODO handle bounds (both percent and int style)
+            try:
+                body_size = self._extract_bounds_information(view.body[0].bounds, body_size)
+            except (KeyError, IndexError):
+                pass
             view.body[0].view_object.update(bounds=body_size)
-
             self.composite(view.body[0].view_object.as_cells(),
                            position=(0, 1),
                            size=body_size)

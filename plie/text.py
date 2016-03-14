@@ -66,8 +66,10 @@ class Text:
         if bounds:
             self._update_bounds(bounds)
         if text:
-            self.text = '\n'.join(wrap(text, self.width, replace_whitespace=False))
-
+            if self.width:
+                self.text = '\n'.join(wrap(text, self.width, replace_whitespace=False))
+            else:
+                self.text = text
 
         if kwargs.get('callout', False):
             self.callout = kwargs['callout']

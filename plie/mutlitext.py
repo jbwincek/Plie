@@ -1,3 +1,5 @@
+from textwrap import wrap
+
 from plie import Text
 from plie.view import Bounds
 class MultiText(Text):
@@ -38,7 +40,24 @@ class MultiText(Text):
                (self.texts, self.bullet_choice, self.justify, (self.width, self.height))
 
     def __str__(self):
-        return '\n'.join([self.bullet_choice + str(t) for t in self.texts])
+        """ creates a printable string of this instance
+
+        Individual texts in in the MultiText instance are prefixed with self.bullet_choice,
+        multiline texts have subsequent lines indented to where they start at an equal indent
+        to the first line
+
+        Returns: a printable string of the contents of this instance
+
+        """
+        lines = []
+        for text_elem in self.texts:
+            for i, line in enumerate(str(text_elem).split('\n')):
+                if i == 0:
+                    lines.append(self.bullet_choice + line)
+                else:
+                    blank_space = ' ' * len(self.bullet_choice)
+                    lines.append(blank_space + line)
+        return '\n'.join(lines)
 
     def update(self, bounds=None, texts=None, specific_text=(), bullet_choice = None):
         """For changing internal state
@@ -72,22 +91,34 @@ class MultiText(Text):
 
         Returns: a dictionary cell space representation of all the contained text objects
         """
-        y_offset = 0
-        for text_elem in self.texts: # text_elem is a Text instance
-            elem_cells = text_elem.as_cells() # get the cells from the current Text instance
-            #TODO make this handle more than just a height of 1
-            # create x,y pairs for each cell in the ranges
-            height, width = text_elem.height, text_elem.width
-            for x, y in [(x, y) for y in range(text_elem.lines) for x in range(text_elem.width)]:
-                # specify which cell in self.cells we're changing
-                current_local_cell = (x, y + y_offset)
-                # map the cell from the current Text instance to the appropriate self.cells cell
-                self.cells[current_local_cell] = elem_cells[(x, y)]
-            y_offset += text_elem.lines # update the offset, so the next one doesn't overlap
-        return self.cells
+        # y_offset = 0
+        # for text_elem in self.texts: # text_elem is a Text instance
+        #     elem_cells = text_elem.as_cells() # get the cells from the current Text instance
+        #     # create x,y pairs for each cell in the ranges
+        #     height, width = text_elem.height, text_elem.width
+        #     for x, y in [(x, y) for y in range(text_elem.lines) for x in range(text_elem.width)]:
+        #         # specify which cell in self.cells we're changing
+        #         current_local_cell = (x, y + y_offset)
+        #         # map the cell from the current Text instance to the appropriate self.cells cell
+        #         self.cells[current_local_cell] = elem_cells[(x, y)]
+        #     y_offset += text_elem.lines # update the offset, so the next one doesn't overlap
+        # return self.cells
+
+        output_lines = str(self).split('\n')
+        cells_to_output = {}
+        for x, y in [(x, y) for y in range(self.height) for x in range(self.width)]:
+            try:
+                cells_to_output[(x,y)] = output_lines[y][x]
+            except IndexError:
+                cells_to_output[(x, y)] = ''
+        return cells_to_output
 
     def _update_texts(self, texts):
         for text_elem in texts:
-
-            elem_bounds = Bounds(self.width, text_elem.lines)
-            self.texts.append(Text(text=text_elem, justify=self.justify, bounds=elem_bounds))
+            if self.width:
+                num_lines = len(wrap(text_elem, self.width, replace_whitespace=False))
+                space_remaining_after_bullet = self.width - len(self.bullet_choice)
+                elem_bounds = Bounds(space_remaining_after_bullet, num_lines)
+                self.texts.append(Text(text=text_elem, justify=self.justify, bounds=elem_bounds))
+            else:
+                self.texts.append(Text(text=text_elem, justify=self.justify))
