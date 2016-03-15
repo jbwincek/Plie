@@ -1,77 +1,46 @@
-from styles import BORDER_STYLE
+from plie.styles import BORDER_STYLE
+from plie.view import Bounds
 
 
-def array_insert(insertable,
-                 receives_insertion,
-                 offset=(2, 2),
-                 highlight=False,
-                 highlight_color='blue'):
-
-    """ Inserts insertable into receives_insertion,
-
-    array_insert will insert insertables bigger than receives_insertion can handle
+def borderer(cells, bounds, border_style='default'):
+    """ Give it a dict of cells, and the size of the area, and it'll border it for you.
 
     Args:
-        insertable: string to insert
-        receives_insertion: an FSArray to
-        offset: distance from top left to start insertion.
-            (x,y) format because that's the only reasonable way
-        highlight: changes the coloring of the char to insert, used to make text look highlighted
-        highlight_color: sets the color for showing the highlight, see curtsies foreground color
-            choices for a list of possible options
+        cells: dict of cells, with keys of format (x,y) and values as single character strings
+        bounds: the width and height of the area to apply a border to
+        border_style: specifies which border style to use
 
-    Notes:
-        Goes character by character through insertable to add them one at a time to
-        receives_insertion since that gets around the complication of making slice sizes with the
-        length of strings trying to be inserted.
-    """
-    y = offset[1]
-    for x, char in enumerate(insertable):
-        if char in ('\n', '\r'):
-            y += 1
-        if highlight:
-            receives_insertion[y, offset[0] + x] = fmtstr(char, fg=highlight_color)
-        else:
-            receives_insertion[y, offset[0] + x] = char
-    return receives_insertion
-
-
-def borderer(array=None, width=40, height=30, border_style='default'):
-    """ Give it height and width, and it'll give you a bordered box as a FSArray.
-
-    borderer consumes the outermost cell for border drawing.
-
-    Args:
-        array: FSArray to surround with a border
-        width: of the border
-        height: of the border
-        border_style: the style of the border to use
-
-    Returns: FSArray with a border surrounding it
+    Returns: a cell space dict that now has a border around it
 
     """
-
-    # TODO update this to use cell dictionaries instead of relying on curtsies
-
-    if not array:
-        box_array = fsarray([' ' * width for _ in range(height)])
+    if isinstance(bounds, (list,tuple)):
+        try:
+            bounds = Bounds(width = bounds[0], height=bounds[1])
+        except IndexError:
+            raise IndexError('bounds passed was not a pair')
+    elif isinstance(bounds, Bounds):
+        pass
     else:
-        box_array = array
-    box_array[0, 0] = BORDER_STYLE[border_style]['top_left']
-    box_array[0, width - 1] = BORDER_STYLE[border_style]['top_right']
-    box_array[height - 1, 0] = BORDER_STYLE[border_style]['bottom_left']
-    box_array[height - 1, width - 1] = BORDER_STYLE[border_style]['bottom_right']
-    if width >= 3:  # fill space between corners if needed
-        span = width - 2
-        for index in range(span):
-            box_array[0, index + 1] = BORDER_STYLE[border_style]['horizontal']
-            box_array[height - 1, index + 1] = BORDER_STYLE[border_style]['horizontal']
-    if height >= 3:
-        span = height - 2
-        for index in range(span):
-            box_array[index + 1, 0] = BORDER_STYLE[border_style]['vertical']
-            box_array[index + 1, width - 1] = BORDER_STYLE[border_style]['vertical']
-    return box_array
+        raise AttributeError('bounds passed was not in a comprehensible format, try using a Bounds '
+                             'object')
+
+    new_cells = cells
+    new_cells[(0,0)] = BORDER_STYLE[border_style]['top_left']
+    new_cells[(bounds.width - 1,0 )] = BORDER_STYLE[border_style]['top_right']
+    new_cells[(0, bounds.height - 1)] = BORDER_STYLE[border_style]['bottom_left']
+    new_cells[(bounds.width - 1, bounds.height - 1)] = BORDER_STYLE[border_style]['bottom_right']
+    if bounds.width >= 3:
+        span = bounds.width - 2
+        for x in range(1, span+1): #offset by one to not mess up the corners
+            new_cells[(x,0)] = BORDER_STYLE[border_style]['horizontal']
+            new_cells[(x, bounds.height-1)] = BORDER_STYLE[border_style]['horizontal']
+    if bounds.height >= 3:
+        span = bounds.height -2
+        for y in range(1, span+1):
+            new_cells[(0,y)] = BORDER_STYLE[border_style]['vertical']
+            new_cells[(bounds.width-1, y)] = BORDER_STYLE[border_style]['vertical']
+
+    return new_cells
 
 
 def fit_text(text, array, margin=1, justification='left', vertical_position='top', indent=False,
@@ -94,4 +63,41 @@ def fit_text(text, array, margin=1, justification='left', vertical_position='top
 
     """
     array_height, array_width = array.shape
+
+
+def backgrounder(cells, bounds, background = '.'):
+    """Replace all empty cells with the specified background cell
+
+    Notes:
+        'empty' cells means cells with actually nothing in them, cells with spaces
+        in them will be left unmodified.
+
+    Args:
+        cells: dictionary of cells with keys of style (x,y)
+        bounds: of the region to background, in format (width, height)
+        background: the character to replace empty cells with
+
+    Returns: a cell space dictionary with empty cells replaced
+
+    """
+    new_cells = {}
+    if isinstance(bounds, (list, tuple)):
+        try:
+            bounds = Bounds(width=bounds[0], height=bounds[1])
+        except IndexError:
+            raise IndexError('bounds passed was not a pair')
+    elif isinstance(bounds, Bounds):
+        pass
+    else:
+        raise AttributeError('bounds passed was not in a comprehensible format, try using a Bounds '
+                             'object')
+
+    for x, y in [(x,y) for y in range(bounds.height) for x in range(bounds.width)]:
+        cell = cells.get((x,y), '')
+        if cell == '':
+            new_cells[(x,y)] = background
+        else:
+            new_cells[(x, y)] = cell
+
+    return new_cells
 

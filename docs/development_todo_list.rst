@@ -39,14 +39,17 @@ Format:
             * [ ][ ][ ] background
     * [d][ ][ ] View
         * [d][ ][i] basic init
-        * [ ][ ][ ] View repr returns a valid view dict
-        * [ ][ ][ ] Section repr returns a valid section dict
+        * [d][ ][i] View repr returns a valid view dict
+        * [d][t][i] Section repr returns a valid section dict
         * [ ]   [ ] Decide whether View should start with an empty list
                   for the body, or a list with one Section already in it.
         * [d][t][i] Sections count as False when empty (__bool__)
         * [ ][ ][ ] Write valid view dict specifying grammar
-        * [ ]   [ ] Decide whether add_view should be replaced by a property of Viw.view_stack
-        * [ ][ ][ ] instead of needing to call header.view_object.update or body[0].view_object, View's should have sane defaults setup, so one could just do header.update(), or body.update() and have it pick the only one if there's only one or the first one if there's multiple. Maybe make one body element user selectably primary?
+        * [ ]   [ ] Decide whether add_view should be replaced by a property of View.view_stack
+        * [ ][ ][ ] instead of needing to call header.view_object.update or body[0].view_object,
+                    View's should have sane defaults setup, so one could just do header.update(),
+                    or body.update() and have it pick the only one if there's only one or the first
+                    one if there's multiple. Maybe make one body element user selectably primary?
    * [ ][ ][ ] Event handling
         * [ ]   [ ] Create mockup
         * [ ]   [ ] continue exploring ways to integrate multiple invent systems -cough- asyncio

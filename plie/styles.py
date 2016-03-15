@@ -12,6 +12,7 @@ BORDER_STYLE = {
         'bottom_right' : '╛',
         'horizontal' : '═',
         'vertical' : '│',
+        'padding_needed': 1
     },
     'heavy' : {
         'top_left': '┏',
@@ -20,6 +21,7 @@ BORDER_STYLE = {
         'bottom_right': '┛',
         'horizontal': '━',
         'vertical': '┃',
+        'padding_needed': 1
     },
     'rounded': {
         'top_left': '╭',
@@ -28,6 +30,7 @@ BORDER_STYLE = {
         'bottom_right': '╯',
         'horizontal': '─',
         'vertical': '│',
+        'padding_needed': 1
     }
 
 }

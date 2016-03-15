@@ -9,7 +9,7 @@ def run():
     a_view_dict = {
         'header' : {
             'bounds': plie.Bounds(width='100%', height=1),
-            'view_object': plie.Text('title text')
+            'view_object': plie.Text('title text', justify='right')
             },
         'body' : {
             'bounds': plie.Bounds(width='100%', height='50%'),

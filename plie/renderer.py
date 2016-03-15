@@ -75,8 +75,8 @@ class Renderer:
 
         """
         for x, y in [(x, y) for y in range(size[1]) for x in range(size[0])]:
-            # TODO verify that using a .get method with the stand in value of ' ' is right
-            self.dict[(x + position[0], y + position[1])] = view_object_dict.get((x, y), ' ')
+            # TODO verify that using a .get method with the stand in value of '' is right
+            self.dict[(x + position[0], y + position[1])] = view_object_dict.get((x, y), '')
 
     def update(self):
         """
@@ -91,6 +91,7 @@ class Renderer:
                 header_size = self._extract_bounds_information(view.header.bounds, header_size)
             except (KeyError, IndexError):
                 pass
+
             view.header.view_object.update(bounds=header_size)
             self.composite(view.header.view_object.as_cells(),
                            position=(0, 0),
@@ -110,20 +111,45 @@ class Renderer:
             space_left_over_for_body -= footer_size[1]  # remove footer height from allotted space
 
         if view.body:
+            # currently, this just makes the view_object take up the entire space for body
+            # which completely disregards the size that someone might set for a view_object
+            # this seems very wrong, especially since using positioning won't work until the object
+            # doesn't take up the whole space.
             body_size = (self.term.width, space_left_over_for_body)
             try:
                 body_size = self._extract_bounds_information(view.body[0].bounds, body_size)
             except (KeyError, IndexError):
                 pass
+            try:
+                position = self._calculate_position(view.body[0].positioning, body_size,
+                                                    how_big_the_object_is)
+            except AttributeError:
+                position = (0,1)
             view.body[0].view_object.update(bounds=body_size)
             self.composite(view.body[0].view_object.as_cells(),
-                           position=(0, 1),
+                           position=position,
                            size=body_size)
 
     def _insert_blanking_view(self):
         """ Adds a view to the stack of spaces to stop translucency
         """
         pass
+
+    def _calculate_position(self, positioning, available_space, size_of_object):
+        """ Calculates exact
+
+        Args:
+            positioning: a Position object specifying where in the available space this thing
+                should be placed.
+                vertical has three options: 'top', 'centered', 'bottom'
+                horizontal has three options: 'left', 'centered', 'bottom'
+            available_space: the bounds used to specify the available space to position this
+                object in
+            size_of_object: how big the object we're positioning is.
+
+        Returns: a coordinate pair tuple of where to put the top left corner
+        """
+
 
     @staticmethod
     def _extract_bounds_information(bounds_representation, available_space):

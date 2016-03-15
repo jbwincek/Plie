@@ -45,3 +45,13 @@ def test_basic_as_cells_with_bullet():
     for cell, value in expected_cells.items():
         assert got_cells[cell] == value
 
+def test_iterating_over_containing_Texts():
+    m = plie.MultiText(texts=['a','b','c','d'])
+    for text in m:
+        assert isinstance(text, plie.Text)
+
+def test_iterating_contains_right_stuff():
+    test_list = ['a','b','c','d']
+    m = plie.MultiText(texts=test_list)
+    for i, text in enumerate(m):
+        assert test_list[i] == str(text)

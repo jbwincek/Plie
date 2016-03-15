@@ -59,6 +59,12 @@ class MultiText(Text):
                     lines.append(blank_space + line)
         return '\n'.join(lines)
 
+    def __len__(self):
+        return len(self.texts)
+
+    def __getitem__(self, index):
+        return self.texts[index]
+
     def update(self, bounds=None, texts=None, specific_text=(), bullet_choice = None):
         """For changing internal state
 
