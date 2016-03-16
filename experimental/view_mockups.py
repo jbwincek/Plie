@@ -236,3 +236,113 @@ space_left_over_for_body has both a height and width dimension. That seems like 
 options in a good way.
 
 """
+
+"""
+Method 5: describing valid view dicts in EBNF
+"""
+
+valid_view_dict = section_list , renderable_sections , utility_section
+section_list = '[' (section_label ',')* ']'
+section_label = "'"string_literal"'"
+renderable_sections = (section_label ':' renderable_section_contents ',')*
+renderable_section_contents  =  [affinity]
+                                [bounds]
+                                [positioning]
+                                [view_object]
+                                [contents]
+                                [styles]
+                                [rules]
+                                [padding]
+utility_secction = (util_key ':' util_val ',')*
+
+
+"""
+What that grammer is saying:
+    * There's a first section in a view, that lists all the renderable section labels
+    * renderable_sections are sections that can be rendered, each renderable section has any of
+      following:
+        * affinity : where the section should stick to (like top for header, or bottom for footer)
+        * bounds : a bounding box for the section (either in percent or cells)
+        * positioning : where in the available space should the object be placed
+        * view_object : an uninitialized class of the type wanted for this section
+        * contents : what should go in the view_object
+        * styles : styles that should be applied to the output of the view_object
+        * rules : I'm not exactually sure, but this is for the renderer, and earlier it seemed
+                  useful, so come back to this. <-------
+        * padding : how many cells of padding that are wanted, in html form, where:
+            * single number, means that on all sides,
+            * two numbers means the first is top/bottom, and the second is right/left
+            * three numbers means top, right, bottom
+            * four numbers means top, right, bottom, left
+    * keep the utility_section, because it might be useful
+
+What this means:
+    * Sections will have defaults. There will be the default_view in Plié somewhere, if a section
+      does not have a specific part of it specified, then the renderer will fall back to the
+      default.
+    * users can create their own defaults
+    * the stock default will mimic the current functionality of Views
+    * I can use ChainMap for overlaying views, and getting view inheritence/transparency
+    * Less stuff needs to be specified by the user if they're just doing basic things
+    * higher extensibility and greater flexibility due to the added optional specifications
+
+What renderer needs to render something:
+    * The space available to use up for the something
+    * The size of the something
+    * What the something produces when it does it's thing
+    * How to modify that production in accordance to the style
+        * A breif aside, what is a style:
+            * a rule the gets applied before the something does it's producing
+            * a pure function that takes in the produced something, and returns something with
+              the style applied.
+    * Where to position the thing the something produced
+
+"""
+
+"""
+Method 6: a slightly refined grammer for views
+"""
+
+valid_view_dict = sections
+sections = renderable_sections | non_renderable_sections
+renderable_sections = (section_label ':' renderable_section_contents ',')*
+renderable_section_contents  =  renderable_True, [affinity], [bounds], [view_object],
+                                [contents], [styles], [padding]
+rederable_True = "'renderable' : True, "
+section_label = "'"?string_literal?"'"
+
+affinity = "'affinity' :" affinity_contents
+affinity_contents = affinity_tuple | affinity_namedtuple
+affinity_tuple = '(' vertical_option ',' horizontal_option ')'
+affinity_namedtuple = 'Affinity(vertical=' vertical_option ', horizontal=' horizontal_option ')'
+vertical_option = 'top' | 'middle' | 'bottom'
+horizontal_option = 'left' | 'middle' | 'bottom'
+
+bounds = "'bounds' : " bounds_contents
+bounds_contents = bounds_tuple | bounds_namedtuple
+bounds_tuple = '(' bounds_measure ',' bounds_measure ')'
+bounds_namedtuple = 'Bounds(width=' bounds_measure ', height=' bounds_measure ')'
+bounds_measure = bounds_percent | integer
+bounds_percent = integer '%' ['+' | '-' integer]
+integer = nonzerodigit digit* | '0'+
+nonzerodigit = '1'...'9'
+digit = '0'...'9'
+
+view_object = ?renderable_callable?
+
+contents = '[' (key_value_argument_pairs)* ']'
+key_value_argument_pairs = ?string_literal? ':' contents_value
+contents_value = ?list? | ?tuple? | ?mapping? | integer | "'"?string_literal?"'"
+
+styles = '[' (style_tuple',')* ']'
+style_tuple = ?style_function? [',' key_value_argument_pairs]
+
+padding = padding_all_around | padding_two_sides | padding_three_sides | padding_four_sides
+padding_all_around = integer
+padding_two_sides =  '(' integer ',' integer ')'
+padding_three_sides = '(' integer ',' integer ',' integer ')'
+padding_four_sides = '(' integer ',' integer ',' integer ',' integer ')'
+
+non_renderable_sections = renderable_False , (extra_data_utils)*
+renderable_False = "'renderable' : False"
+
