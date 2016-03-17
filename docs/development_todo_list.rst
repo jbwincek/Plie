@@ -54,6 +54,21 @@ Format:
         * [ ]   [ ] Create mockup
         * [ ]   [ ] continue exploring ways to integrate multiple invent systems -cough- asyncio
     * [ ][ ][ ] Docs
+
     * [ ][ ][ ] Other
+        * [x] learn more about ABCs
+        * [ ] use that knowledge in the Renderable ABC
+        * [ ] update Text and MultiText to subclass Renderable
+        * [ ] refine view specifying grammar
+            * [ ] examine edge cases
+            * [ ] write mock ups for different layouts
+        * [ ] Renderer rewrite
+        * [ ] ChainMap with views for defaults and view inheritance
+        * [ ] ScrollableText Renderable
+        * [ ] navigable base class
+        * [ ] use memoryview's for dictionaries with more lazy production
+        * [ ] (after 1.0 release) create a view maker, for easy view creation
+        * [ ] (after 1.0 release) create a template engine for views
+
 
 

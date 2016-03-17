@@ -346,3 +346,236 @@ padding_four_sides = '(' integer ',' integer ',' integer ',' integer ')'
 non_renderable_sections = renderable_False , (extra_data_utils)*
 renderable_False = "'renderable' : False"
 
+"""
+Notes on method 6:
+    * This expands on what was started in method 6 with some changes
+    * a valid view dict is made up of sections
+        * sections can be either renderable or not (specified by whethere the 'renderable' key in
+          the section points to True or False
+        * (this means there's no longer a list of sections, instead sections are found by iterating
+          through the keys, and checking if they're renderable)
+    * Sections are dicts
+    * renderable sections contain any of the following keys 'renderable', 'affinity' (see note),
+      'bounds', 'view_object', 'contents', 'styles', 'padding'
+        * 'renderable' points to a boolean, which for a renderable section must be True
+        * 'affinity' used to be called positioning, affinity describes where in the available
+           space the output should be put.
+        * 'bounds' is like bounds from before, and specifies how big an object is, has the same
+          percentage and cells versions of specifying
+        * 'view_object' points to the class of the view object that's going to be rendered here,
+          without actually initializing it.
+        * 'contents' points to the arguments that should be passed to the view_object constructor
+        * 'styles' points to a list of style tuples that should be applied to this view_object
+            * style tuples contain the style callable and then any arguments that it should call
+              with
+        * 'padding' points to a specification for how much padding (in cells) should go around
+          the view_object). This padding gets applied to the size of the view_object to squeeze
+          it down to a smaller size than bounds. Useful for applying borders.
+    * nonrenderable sections contain other stuff, but I'm not exactly sure what yet.
+
+
+* Questions, concerns:
+    * should affinity be called positioning?
+    * should affinity accept percentage based positioning as opposed to the three options base
+      positioning?
+    * what about a positioning, that has both an absolute and a relative option, the relative option
+      would be like the current affinity three choice thing (maybe with percentages), but the
+      absolute option would let the user specify the top left corner of the view_object.
+      
+"""
+
+"""
+Method 7: affinity -> positioning: percentage based, specifier choice, or absolute, 
+"""
+
+valid_view_dict = sections
+sections = renderable_sections | non_renderable_sections
+renderable_sections = (section_label ':' renderable_section_contents ',')*
+renderable_section_contents  =  renderable_True, [positioning], [bounds], 
+                                [view_object], [contents], [styles], [padding]
+rederable_True = "'renderable' : True, "
+section_label = "'"?string_literal?"'"
+
+positioning = "'positioning' :" positioning_contents
+positioning_contents = positioning_tuple | positioning_nt
+positioning_tuple = '(' vertical_option ',' horizontal_option ')'
+positioning_nt = 'Positioning(vertical=' vertical_option ', horizontal=' horizontal_option ')'
+vertical_option = percent | vertical_choice | positioning_int_pair
+horizontal_option = percent | vertical_choice | positioning_int_pair
+positioning_int_pair = '(' integer ',' integer ')'
+vertical_choice = 'top' | 'middle' | 'bottom'
+horizontal_choice = 'left' | 'middle' | 'bottom'
+
+bounds = "'bounds' : " bounds_contents
+bounds_contents = None | bounds_tuple | bounds_namedtuple
+bounds_tuple = '(' bounds_measure ',' bounds_measure ')'
+bounds_namedtuple = 'Bounds(width=' bounds_measure ', height=' bounds_measure ')'
+bounds_measure = percent | integer
+percent = integer '%' ['+' | '-' integer]
+integer = nonzerodigit digit* | '0'+
+nonzerodigit = '1'...'9'
+digit = '0'...'9'
+
+view_object = ?renderable_callable?
+
+contents = '[' (key_value_argument_pairs)* ']'
+key_value_argument_pairs = ?string_literal? ':' contents_value
+contents_value = ?list? | ?tuple? | ?mapping? | integer | "'"?string_literal?"'"
+
+styles = '[' (style_tuple',')* ']' | style_tuple
+style_tuple = ?style_function? [',' key_value_argument_pairs]
+
+padding = padding_all_around | padding_two_sides | padding_three_sides | padding_four_sides
+padding_all_around = integer
+padding_two_sides =  '(' integer ',' integer ')'
+padding_three_sides = '(' integer ',' integer ',' integer ')'
+padding_four_sides = '(' integer ',' integer ',' integer ',' integer ')'
+
+non_renderable_sections = renderable_False , (extra_data_utils)*
+renderable_False = "'renderable' : False"
+
+"""
+Notes about method 7:
+    * Positioning changes:
+        * Now that sections have padding, which can be specified on four
+          sides, and more options. Positioning will now be global rather than
+          relavant to the size of the space that the object is in. Global in
+          this case means the position is relative to the size of the whole
+    * Styles picked up a None option, to signify when no styles should be applied. A close contender was an empty tuple, that might come back.
+    * 
+
+"""
+"""
+Method 7: continued: this time as actual syntax
+"""
+
+a_view = {
+    'header' : {
+        'renderable' : True,
+        'positioning' : plie.Positioning(vertical='0%', horizontal='50%')
+        'bounds' : plie.Bounds(width='100%', height=1)
+        'view_object' : plie.Text
+        'contents' : {
+            'text': 'header text goes here',
+          'justify': 'left'
+         },
+        'styles' : None,
+        'padding' : 0,
+    },
+    'body_left' : {
+        'renderable' : True,
+        'positioning' : plie.Positioning(vertical='50%', horizontal='25%')
+        'bounds' : plie.Bounds(width='50%', height='100%-2')
+        'view_object' : plie.MultiText 
+        'contents' : {
+            'text_list': ['menu option one',
+                          'menu option two',
+                          'menu option three'],
+            'bullet_choice' : '*'    
+            'justify': 'left'
+            }
+        'styles' : (plie.borderer, {'border_style' : 'rounded'})
+        'padding' : 1
+
+    }
+    'body_right' : {
+        'renderable' : True,
+        'positioning' : plie.Positioning(vertical='50%', horizontal='75%')
+        'bounds' : plie.Bounds(width='50%', height='100%-2')
+        'view_object' : plie.Text 
+        'contents' : {
+            'text': some_long_text_variable,
+            'justify': 'left'
+            }
+        'styles' : [
+                    (plie.borderer, {'border_style' : 'rounded'}),
+                    (plie.backgrounder, {'background' = '.'})
+                    ]
+        'padding' : 1
+
+    }
+    'footer' : {
+        'renderable': True,
+        'positioning': plie.Positioning(vertical='100%', horizontal='50%')
+        'bounds': plie.Bounds(width='100%', height=1)
+        'view_object': plie.Text
+        'contents': {
+            'text': 'The footer text',
+            'justify': 'center'
+        }
+        'styles': None
+        'padding': 0
+
+    }
+    'util' : {
+        'renderable' : False,
+        'contents' : []
+  }
+}
+
+""" Notes about method 7: continued
+    * Does positioning refer to where the top left corner goes, or where the 
+      center of the object is?
+
+"""
+
+"""
+Method 8: more refinements
+"""
+
+valid_view_dict = sections
+sections = renderable_sections | non_renderable_sections
+renderable_sections = (section_label ':' renderable_section_contents ',')*
+renderable_section_contents  =  renderable_True, [positioning], [bounds],
+                                [view_object], [contents], [styles], [padding], [VO_instance]
+rederable_True = "'renderable' : True, "
+section_label = "'"?string_literal?"'"
+
+positioning = "'positioning' :" positioning_contents
+positioning_contents = positioning_tuple | positioning_nt
+positioning_tuple = '(' vertical_option ',' horizontal_option ')'
+positioning_nt = 'Positioning(vertical=' vertical_option ', horizontal=' horizontal_option ')'
+vertical_option = percent | vertical_choice | positioning_int_pair
+horizontal_option = percent | vertical_choice | positioning_int_pair
+positioning_int_pair = '(' integer ',' integer ')'
+vertical_choice = 'top' | 'middle' | 'bottom'
+horizontal_choice = 'left' | 'middle' | 'bottom'
+
+bounds = "'bounds' : " bounds_contents
+bounds_contents = None | bounds_tuple | bounds_namedtuple
+bounds_tuple = '(' bounds_measure ',' bounds_measure ')'
+bounds_namedtuple = 'Bounds(width=' bounds_measure ', height=' bounds_measure ')'
+bounds_measure = percent | integer
+percent = integer '%' ['+' | '-' integer]
+integer = nonzerodigit digit* | '0'+
+nonzerodigit = '1'...'9'
+digit = '0'...'9'
+
+view_object = ?renderable_callable?
+
+contents = '[' (key_value_argument_pairs)* ']'
+key_value_argument_pairs = ?string_literal? ':' contents_value
+contents_value = ?list? | ?tuple? | ?mapping? | integer | "'"?string_literal?"'"
+
+styles = '[' (style_tuple',')* ']' | style_tuple
+style_tuple = ?style_function? [',' key_value_argument_pairs]
+
+padding = padding_all_around | padding_two_sides | padding_three_sides | padding_four_sides
+padding_all_around = integer
+padding_two_sides =  '(' integer ',' integer ')'
+padding_three_sides = '(' integer ',' integer ',' integer ')'
+padding_four_sides = '(' integer ',' integer ',' integer ',' integer ')'
+
+VO_instance = "'instance' :" ?instance of the view object?
+
+non_renderable_sections = renderable_False , [blanking] (extra_data_utils)*
+renderable_False = "'renderable' : False"\
+banking = "'blanking' :" boolean
+boolean = 'True' | 'False'
+
+
+"""
+Notes on method 8:
+    * Sections can now contain instances of the view object class
+    * the util section contains a blanking flag, to specify whether there should be a blank view
+      placed undernear this view.
