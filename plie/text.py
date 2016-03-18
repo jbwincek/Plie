@@ -52,7 +52,7 @@ class Text:
                                                                self.justify, (self.width,
                                                                               self.height))
     def __str__(self):
-        # TODO decide if this should have styling and formatting appplied to it
+        # TODO decide if this should have styling and formatting applied to it
         return self.text
 
     def update(self, bounds=None, text=None, **kwargs):

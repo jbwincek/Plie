@@ -15,12 +15,18 @@ class CellSpace(UserDict):
     @property
     def width(self):
         # these are plus one because of the 0th cell being counted
-        return max(list(self.data.keys()), key=lambda t: t[0])[0] + 1
+        try:
+            return max(list(self.data.keys()), key=lambda t: t[0])[0] + 1
+        except ValueError:
+            return 0
 
     @property
     def height(self):
         # these are plus one because of the 0th cell being counted
-        return max(list(self.data.keys()), key=lambda t: t[1])[1] + 1
+        try:
+            return max(list(self.data.keys()), key=lambda t: t[1])[1] + 1
+        except ValueError:
+            return 0
 
     def __getitem__(self, index):
         cls = type(self)

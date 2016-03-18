@@ -95,3 +95,15 @@ def test_extract_bounds_negative_percentages_error():
     b = plie.Bounds(width='-10%',height='-10%')
     with pytest.raises(ValueError):
         output = r._extract_bounds_information(b,(100,100))
+
+def test_position_1D():
+    r = plie.renderer.Renderer()
+    assert r._position_1D(1, 80,'0%') == 0
+    assert r._position_1D(1, 80, '100%') == 79
+    assert r._position_1D(1, 80, 'left') == 0
+    assert r._position_1D(1, 80, 'right') == 79
+    assert r._position_1D(40, 80,'50%') == 20
+    assert r._position_1D(40, 80, '50%+1') == 21
+    assert r._position_1D(40, 80, '50%-1') == 19
+    with pytest.raises(ValueError):
+        assert r._position_1D(1,40, 'gobbly gook')

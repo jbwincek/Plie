@@ -1,7 +1,9 @@
 from textwrap import wrap
 
-from plie import Text
+from plie.text import Text
 from plie.view import Bounds
+
+
 class MultiText(Text):
     """ Able to display sequences of text in a well formatted way
 
@@ -12,10 +14,11 @@ class MultiText(Text):
         bounds: bounding box specifying size in cells (x,y)
 
     """
-    def __init__(self, texts = (), bullet_choice = '', justify = 'left', bounds = None):
+
+    def __init__(self, texts=(), bullet_choice='', justify='left', bounds=None):
 
         self.bullet_choice = bullet_choice
-        #super().__init__(justify=justify, bounds=bounds)
+        # super().__init__(justify=justify, bounds=bounds)
         self.justify = justify
         self.cells = {}
         try:
@@ -65,7 +68,7 @@ class MultiText(Text):
     def __getitem__(self, index):
         return self.texts[index]
 
-    def update(self, bounds=None, texts=None, specific_text=(), bullet_choice = None):
+    def update(self, bounds=None, texts=None, specific_text=(), bullet_choice=None):
         """For changing internal state
 
         Args:
@@ -77,7 +80,7 @@ class MultiText(Text):
         Returns: nothing, but updates the internal state
         """
         if bounds:
-            #TODO verify that this works
+            # TODO verify that this works
             super()._update_bounds(bounds)
             for text_elem in self.texts:
                 text_elem._update_bounds(bounds)
@@ -114,7 +117,7 @@ class MultiText(Text):
         cells_to_output = {}
         for x, y in [(x, y) for y in range(self.height) for x in range(self.width)]:
             try:
-                cells_to_output[(x,y)] = output_lines[y][x]
+                cells_to_output[(x, y)] = output_lines[y][x]
             except IndexError:
                 cells_to_output[(x, y)] = ''
         return cells_to_output
