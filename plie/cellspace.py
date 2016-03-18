@@ -12,21 +12,19 @@ class CellSpace(UserDict):
            largest index in that direction (height or width).
     """
 
-    @property
-    def width(self):
-        # these are plus one because of the 0th cell being counted
-        try:
-            return max(list(self.data.keys()), key=lambda t: t[0])[0] + 1
-        except ValueError:
-            return 0
+    def __init__(self, *args, **kwargs):
+        self.width = 1
+        self.height = 1
+        super().__init__(*args, **kwargs)
 
-    @property
-    def height(self):
-        # these are plus one because of the 0th cell being counted
-        try:
-            return max(list(self.data.keys()), key=lambda t: t[1])[1] + 1
-        except ValueError:
-            return 0
+
+    def __setitem__(self, key, item):
+        self.data[key] = item
+        if isinstance(key,(tuple,list,set)):
+            if key[0] >= self.width:
+                self.width = key[0] + 1
+            if key[1] >= self.height:
+                self.height = key[1] + 1
 
     def __getitem__(self, index):
         cls = type(self)
