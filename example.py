@@ -33,7 +33,7 @@ def run():
                           'menu option three'],
                 'bullet_choice': '*',
                 'justify': 'left'},
-            'styles': (plie.borderer, {'border_style': 'rounded'}),
+            'styles': [(plie.borderer, {'border_style': 'rounded'}),],
             'padding': 1,
         },
         'body_right': {
@@ -43,11 +43,12 @@ def run():
             'view_object': plie.Text,
             'contents': {
                 'text': some_long_text_variable,
-                'justify': 'right'
+                'justify': 'left'
             },
             'styles': [
-                (plie.borderer, {'border_style': 'rounded'}),
-                (plie.backgrounder, {'background': '.'})],
+                (plie.borderer, {'border_style': 'default'}),
+               # (plie.backgrounder, {'background': '.'})
+                ],
             'padding': 1,
         },
         'footer': {

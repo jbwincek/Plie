@@ -298,7 +298,8 @@ class Renderer():
             position: where the top left corner should go
         """
         for x,y in [(x,y) for y in range(cellspace.height) for x in range(cellspace.width)]:
-            self.cells[(x+position[0],y+position[1])] = cellspace.get((x,y), '')
+            if cellspace.get((x,y), False):
+                self.cells[(x+position[0],y+position[1])] = cellspace[(x,y)]
 
     def display(self):
         """
@@ -329,8 +330,21 @@ class Renderer():
         for section in self.view.keys():
             if self.view[section]['renderable']:
                 new_cells = CellSpace(self.view[section]['instance'].as_cells())
-                position = self._interpret_position(section, (new_cells.width, new_cells.height))
-                self.composite(new_cells,position)
+                bounds = Bounds(new_cells.width, new_cells.height)
+                padding = self._apply_padding(bounds, self.view[section]['padding'])
+                horz_padding = (bounds.width - padding[0]) //2
+                vert_padding = (bounds.height - padding[1]) //2
+                position = self._interpret_position(section, bounds)
+                position = position[0]-horz_padding, position[1]-horz_padding
+
+                if self.view[section]['styles']:
+                    for style_tuple in self.view[section]['styles']:
+                        paddingless_bounds = bounds[0] + 2*horz_padding, bounds[1] + 2*horz_padding
+                        self.composite(style_tuple[0](paddingless_bounds, **style_tuple[1]),
+                                       position)
+
+                content_position = position[0] + horz_padding, position[1] + vert_padding
+                self.composite(new_cells, content_position)
 
     def _initialize_section(self, section):
         """ Go through a section doing any figuring out or initializing that's needed.
@@ -531,7 +545,7 @@ class Renderer():
             match = re.match(pattern, specifier)
             if match:
                 percentage = float(match.group('percent')) * .01
-                temp_start = int(span * percentage - size_of_the_object / 2)
+                temp_start = int((span * percentage) - (size_of_the_object / 2))
                 if match.group('operator') and match.group('amount'):  # 10%+5 cases
                     if match.group('operator') == '+':
                         return temp_start + int(match.group('amount'))

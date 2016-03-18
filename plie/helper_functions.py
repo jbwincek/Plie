@@ -1,13 +1,17 @@
 from plie.styles import BORDER_STYLE
 from plie.view import Bounds
+from plie.cellspace import CellSpace
 
 
-def borderer(cells, bounds, border_style='default'):
-    """ Give it a dict of cells, and the size of the area, and it'll border it for you.
+def borderer(bounds, cells=None, border_style='default'):
+    """ Creates a border around an area of the given size
+
+    borderer will work with either just a size parameter, producing only the cells for the border,
+    or for applying a border to an already filled cell space
 
     Args:
-        cells: dict of cells, with keys of format (x,y) and values as single character strings
         bounds: the width and height of the area to apply a border to
+        cells: dict of cells, with keys of format (x,y) and values as single character strings
         border_style: specifies which border style to use
 
     Returns: a cell space dict that now has a border around it
@@ -24,7 +28,10 @@ def borderer(cells, bounds, border_style='default'):
         raise AttributeError('bounds passed was not in a comprehensible format, try using a Bounds '
                              'object')
 
-    new_cells = cells
+    if not cells:
+        new_cells = CellSpace()
+    else:
+        new_cells = cells
     new_cells[(0,0)] = BORDER_STYLE[border_style]['top_left']
     new_cells[(bounds.width - 1,0 )] = BORDER_STYLE[border_style]['top_right']
     new_cells[(0, bounds.height - 1)] = BORDER_STYLE[border_style]['bottom_left']
@@ -65,22 +72,26 @@ def fit_text(text, array, margin=1, justification='left', vertical_position='top
     array_height, array_width = array.shape
 
 
-def backgrounder(cells, bounds, background = '.'):
-    """Replace all empty cells with the specified background cell
+def backgrounder(bounds, cells = None, background = '.'):
+    """Replace all empty cells with the specified background cell,
+        or fill size bounds with background str
 
     Notes:
         'empty' cells means cells with actually nothing in them, cells with spaces
         in them will be left unmodified.
 
     Args:
-        cells: dictionary of cells with keys of style (x,y)
         bounds: of the region to background, in format (width, height)
+        cells: dictionary of cells with keys of style (x,y)
         background: the character to replace empty cells with
 
     Returns: a cell space dictionary with empty cells replaced
 
     """
-    new_cells = {}
+    if not cells:
+        cells = CellSpace()
+
+    new_cells = CellSpace()
     if isinstance(bounds, (list, tuple)):
         try:
             bounds = Bounds(width=bounds[0], height=bounds[1])

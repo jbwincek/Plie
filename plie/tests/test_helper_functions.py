@@ -25,7 +25,7 @@ def test_borderer_basic():
         (2, 1): '│',
         (2, 2): '╛',
     }
-    got_cells = borderer(test_cells,(3,3))
+    got_cells = borderer((3,3), test_cells)
     assert got_cells == expected_result_cells
 
 
@@ -52,7 +52,7 @@ def test_borderer_rounded():
         (2, 1): '│',
         (2, 2): '╯',
     }
-    got_cells = borderer(test_cells,(3,3), border_style='rounded')
+    got_cells = borderer((3,3), test_cells, border_style='rounded')
     assert got_cells == expected_result_cells
 
 
@@ -80,5 +80,5 @@ def test_backgrounder():
         (2, 1): '.',
         (2, 2): '.',
     }
-    got_cells = backgrounder(test_cells, (3,3))
+    got_cells = backgrounder((3,3), test_cells)
     assert got_cells == expected_cells
