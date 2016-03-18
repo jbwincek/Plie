@@ -8,7 +8,7 @@ from plie.helper_functions import borderer, backgrounder
 
 
 __title__ = 'plie'
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 __author__ = 'Jessie Wincek'
 __license__ = 'MIT'
 

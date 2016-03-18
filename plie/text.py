@@ -26,10 +26,11 @@ class Text:
     Returns: an initialized Text object
 
         """
-    def __init__(self, text='', callout=None, justify='left', bounds=None):
+    def __init__(self, text='', callout=None, justify='left', bounds=None, replace_whitespace=True):
         self.callout = callout
         self.justify = justify
         self.cells = {}
+        self._replace_whitespace = replace_whitespace
         try:
             # preferred method for handling bounds (as a namedtuple)
             self.width = bounds.width
@@ -43,7 +44,7 @@ class Text:
                 self.width = 0
                 self.height = 0
         if self.width:
-            self.text = '\n'.join(wrap(text, self.width, replace_whitespace=False))
+            self.text = '\n'.join(wrap(text, self.width, replace_whitespace=self._replace_whitespace))
         else:
             self.text = text
 
@@ -67,7 +68,7 @@ class Text:
             self._update_bounds(bounds)
         if text:
             if self.width:
-                self.text = '\n'.join(wrap(text, self.width, replace_whitespace=False))
+                self.text = '\n'.join(wrap(text, self.width, replace_whitespace=self._replace_whitespace))
             else:
                 self.text = text
 

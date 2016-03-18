@@ -71,4 +71,7 @@ Format:
         * [ ] (after 1.0 release) create a template engine for views
 
 
+Profiling results:
+    * Start 3/18 12.0s
+    * Commit 587040e 3/18 0.168s
 
