@@ -516,6 +516,11 @@ a_view = {
 """ Notes about method 7: continued
     * Does positioning refer to where the top left corner goes, or where the 
       center of the object is?
+        * Position refers to the center of the object mostly, specifics:
+            * 50% means centered
+            * 0% means top row or left column
+            * 100% means last row, or right column
+
 
 """
 
@@ -539,7 +544,7 @@ vertical_option = percent | vertical_choice | positioning_int_pair
 horizontal_option = percent | vertical_choice | positioning_int_pair
 positioning_int_pair = '(' integer ',' integer ')'
 vertical_choice = 'top' | 'middle' | 'bottom'
-horizontal_choice = 'left' | 'middle' | 'bottom'
+horizontal_choice = 'left' | 'middle' | 'right'
 
 bounds = "'bounds' : " bounds_contents
 bounds_contents = None | bounds_tuple | bounds_namedtuple

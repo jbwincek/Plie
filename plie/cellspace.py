@@ -3,8 +3,7 @@ from numbers import Integral
 
 
 class CellSpace(UserDict):
-    """ CellSpace is a thin wrapper around dict, for dicts of (x,y) coordinate pairs to support 2D
-    slicing, and knowing bounds information of the CellSpace.
+    """ CellSpace adds 2D slicing and bounds information to dicts of (x,y) coordinate pairs.
 
     Notes: CellSpace does not support assigning by slice at this point.
            Height and width are not absolute measures of how many cells CellSpace contains in
@@ -30,7 +29,7 @@ class CellSpace(UserDict):
         height = self.height
         if isinstance(index, tuple) and isinstance(index[0], slice) and isinstance(index[1], slice):
             # handle the case where both items are slices aka box case
-            x_s = index[0].indices(width)
+            x_s = index[0].indices(width) # indices returns a (start, stop, stride) tuple
             y_s = index[1].indices(height)
             for y_index, y in enumerate(range(*y_s)):
                 for x_index, x in enumerate(range(*x_s)):
