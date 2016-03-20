@@ -31,9 +31,10 @@ def run():
                 'texts': ['menu option one',
                           'menu option two',
                           'menu option three'],
-                'bullet_choice': '*',
+                'bullet_choice': '* ',
                 'justify': 'left'},
-            'styles': [(plie.borderer, {'border_style': 'rounded'}),],
+            'styles': [(plie.backgrounder, {'background' : '.'}),
+                       (plie.borderer, {'border_style': 'rounded'}),],
             'padding': 1,
         },
         'body_right': {
@@ -58,7 +59,7 @@ def run():
             'view_object': plie.Text,
             'contents': {
                 'text': 'The footer text',
-                'justify': 'centered'
+                'justify': 'center'
             },
             'styles': None,
             'padding': 0,
