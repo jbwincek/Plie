@@ -8,8 +8,8 @@ Format:
 
 
 ::
-    * [ ][ ][ ] MultiText
-    * [ ][ ][ ] Text
+    * [d][ ][ ] MultiText
+    * [d][ ][ ] Text
         * * [d][t][i] init
         * [d][ ][ ] update
             * [d][ ][i] text update
@@ -59,11 +59,13 @@ Format:
         * [x] learn more about ABCs
         * [ ] use that knowledge in the Renderable ABC
         * [ ] update Text and MultiText to subclass Renderable
-        * [ ] refine view specifying grammar
+        * [x] refine view specifying grammar
             * [ ] examine edge cases
-            * [ ] write mock ups for different layouts
-        * [ ] Renderer rewrite
-        * [ ] ChainMap with views for defaults and view inheritance
+            * [x] write mock ups for different layouts
+        * [x] Renderer rewrite
+        * [ ] ChainMap with sections for defaults and view inheritance
+            - (Note: this was formerly ChainMap for views, but ChainMap as it's programmed, doesn't
+              support nested dictionaries.
         * [ ] ScrollableText Renderable
         * [ ] navigable base class
         * [ ] use memoryview's for dictionaries with more lazy production

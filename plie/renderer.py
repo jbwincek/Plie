@@ -260,10 +260,9 @@ class Renderer():
             self.view = {}
 
 
-
     def add_view(self, view):
-        """ Take in a valid view dict, and initialize anything that needs initializing, then add it
-            to the internal ChainMap of view dicts.
+        """ Take in a valid view dict, and initialize anything that needs initializing,
+        then store it ready for displaying
 
         Notes:
             To initialize in this context means find the size for each Renderable, by examining
@@ -271,6 +270,9 @@ class Renderer():
             it can start at the appropriate size.
             The instance of the Renderable for each renderable section then gets added to that
             section.
+
+            Sections get turned into ChainMaps, if they share a name with any of the default
+            sections, they can inherit attributes from that default.
 
         Args:
             view: a valid view dict
@@ -290,8 +292,7 @@ class Renderer():
                 self._initialize_section(section)
 
     def composite(self, cellspace, position=(0, 0)):
-        """ given a view_object represented as a dictionary of cells of size and position, add that to
-        the internal dict, at the correct position.
+        """ Given a cellspace and position, add that to the internal dict at the correct position.
 
         Args:
             cellspace: a cell space dictionary representation of a view object
@@ -301,13 +302,18 @@ class Renderer():
             if cellspace.get((x,y), False):
                 self.cells[(x+position[0],y+position[1])] = cellspace[(x,y)]
 
-    def display(self):
-        """
-        Go through the view on the top of the view stack, and add everything it contains to the
-        dict.
+    def display(self, update=True):
+        """ Display fullscreen out to the terminal.
+
+         Args:
+             update: whether or not to update before displaying
+
+         Notes:
+            Uses Blessed for fullscreen terminal support.
 
         """
-        self.update()
+        if update:
+            self.update()
 
         with self.term.fullscreen():
             print(self.formulate(), end='')
@@ -328,8 +334,11 @@ class Renderer():
         """Updates the internal dictionary representation"""
 
         for section in self.view.keys():
+            # only update renderable sections
             if self.view[section]['renderable']:
+                # get the cells from the initialized instance
                 new_cells = CellSpace(self.view[section]['instance'].as_cells())
+                # extrapolate size information from new_cells
                 bounds = Bounds(new_cells.width, new_cells.height)
                 paddinged_size = self._apply_padding(bounds, self.view[section]['padding'])
                 horz_padding = (bounds.width - paddinged_size[0]) //2
@@ -337,6 +346,7 @@ class Renderer():
                 position = self._interpret_position(section, bounds)
                 position = position[0]-horz_padding, position[1]-horz_padding
 
+                # apply styles if they exist
                 if self.view[section]['styles']:
                     for style_tuple in self.view[section]['styles']:
                         paddingless_bounds = bounds[0] + 2*horz_padding, bounds[1] + 2*horz_padding
@@ -347,12 +357,13 @@ class Renderer():
                 self.composite(new_cells, content_position)
 
     def _initialize_section(self, section):
-        """ Go through a section doing any figuring out or initializing that's needed.
+        """ Go through a section figuring out bounds information and initializing the view_object
         Args
             section: a key for the section that should be initialized
             view: the index in the view of the view, 0 means top
 
-        Returns: adds an instance of the renderable to the view
+        Notes:
+            Does not return anything, but modifies the state of the view
 
         """
         bounding_information = self.view[section]['bounds']

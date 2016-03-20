@@ -5,19 +5,20 @@ from textwrap import wrap
 
 class Text:
     """ Text is the universal class for dealing with all single text snippets.
+
     Text helps with basic formatting, justification, word wrapping to the appropriate width and
-    acts as a way to contain a contain block of text for applying styles to it or developing a
+    acts as a way to contain a block of text for applying styles to it or developing a
     layout.
 
     Args:
         text: the text to display (can be changed later
 
-        callout: an attribute made available for storing an attribute, it is used if this Text
-            object gets selected by some event.
+        callout: an attribute made available for storing a function, it is used if this Text object
+            gets selected by some event.
 
         justify: specifies which justification the text should have, options are:
             'left' where all the text aligns with the left edge,
-            'centered' where all the text is centered in the middle of the, available space
+            'center' where all the text is centered in the middle of the, available space
             'right' where all the text aligns with the right edge
 
         bounds: the bounding box for the Text object in screen space cells, will be set
@@ -71,12 +72,12 @@ class Text:
                 self.text = '\n'.join(wrap(text, self.width, replace_whitespace=self._replace_whitespace))
             else:
                 self.text = text
-
         if kwargs.get('callout', False):
             self.callout = kwargs['callout']
-
         if kwargs.get('justify', False):
             self.justify = kwargs['justify']
+        if kwargs.get('replace_whitespace', False):
+            self._replace_whitespace = kwargs['replace_whitespace']
 
     @property
     def lines(self):
@@ -94,7 +95,7 @@ class Text:
 
         """
         operation = {'left': partial(str.ljust),
-                     'centered': partial(str.center),
+                     'center': partial(str.center),
                      'right': partial(str.rjust)}
 
         lines = self.text.split('\n')

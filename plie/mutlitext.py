@@ -1,24 +1,25 @@
 from textwrap import wrap
-
 from plie.text import Text
 from plie.view import Bounds
 
 
 class MultiText(Text):
-    """ Able to display sequences of text in a well formatted way
+    """ MultiText displays sequences of text, including bulleted lists.
+
+    MultiText can be used for lists of text, menus, and other things that involve multiple distinct
+    elements of vertically arranged text.
 
     Args:
-        texts: list of text strings to display
+        texts: sequence of text strings to display (preferably immutable)
         bullet_choice: a string that will be used as the bullet for each list item
-        justify: which justification to use for each list item
-        bounds: bounding box specifying size in cells (x,y)
+        justify: which justification to use for the list items
+        bounds: bounding box specifying size in cells (x,y), usually set by Renderer
 
     """
 
     def __init__(self, texts=(), bullet_choice='', justify='left', bounds=None):
 
         self.bullet_choice = bullet_choice
-        # super().__init__(justify=justify, bounds=bounds)
         self.justify = justify
         self.cells = {}
         try:
@@ -96,22 +97,10 @@ class MultiText(Text):
             self.bullet_choice = bullet_choice
 
     def as_cells(self):
-        """ Translates the internal state into a format for transferring
+        """ Translates the internal state into a cell space based format for transferring
 
         Returns: a dictionary cell space representation of all the contained text objects
         """
-        # y_offset = 0
-        # for text_elem in self.texts: # text_elem is a Text instance
-        #     elem_cells = text_elem.as_cells() # get the cells from the current Text instance
-        #     # create x,y pairs for each cell in the ranges
-        #     height, width = text_elem.height, text_elem.width
-        #     for x, y in [(x, y) for y in range(text_elem.lines) for x in range(text_elem.width)]:
-        #         # specify which cell in self.cells we're changing
-        #         current_local_cell = (x, y + y_offset)
-        #         # map the cell from the current Text instance to the appropriate self.cells cell
-        #         self.cells[current_local_cell] = elem_cells[(x, y)]
-        #     y_offset += text_elem.lines # update the offset, so the next one doesn't overlap
-        # return self.cells
 
         output_lines = str(self).split('\n')
         cells_to_output = {}

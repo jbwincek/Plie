@@ -50,28 +50,6 @@ def borderer(bounds, cells=None, border_style='default'):
     return new_cells
 
 
-def fit_text(text, array, margin=1, justification='left', vertical_position='top', indent=False,
-             truncate=True) :
-    """ Fit and flow text into an array, splits words to newlines at spaces.
-
-    Args:
-        text: The text to fill the array with. Can include special characters, newlines and spaces.
-        array: The FSArray to put the text into.
-        margin: Amount of space to leave around the text in cells
-        justification: acceptable options are 'left', 'right' and 'center'
-        vertical_position: acceptable options are 'top', 'center', and 'bottom'
-        indent: whether or not to indent the first line of paragraphs
-        truncate: specifies whether or not to truncate text, if false, raise AttributeError
-
-    Returns: an FSArray with the text filling the interior.
-
-    Raises:
-        AttributeError: if the string is too long to fit in the array, and truncate is set to False
-
-    """
-    array_height, array_width = array.shape
-
-
 def backgrounder(bounds, cells = None, background = '.'):
     """Replace all empty cells with the specified background cell,
         or fill size bounds with background str
