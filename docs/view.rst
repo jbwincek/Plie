@@ -7,10 +7,10 @@ View
 
 What counts as a 'valid view dict'?
 -----------------------------------
-This grammar specifies what Renderer accepts as a 'valid view dict' in Python's modified
-`Backus-Naur form`_.
+This grammar specifies what Renderer accepts as a 'valid view dict' in Extended Backus-Naur Form.
 
-.. _Backus-Naur form: https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form
+
+.. _Backus-Naur form: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form
 
 .. code-block:: ebnf
 
@@ -19,7 +19,7 @@ This grammar specifies what Renderer accepts as a 'valid view dict' in Python's 
     renderable_sections = (section_label ':' renderable_section_contents ',')*
     renderable_section_contents  =  renderable_True, [positioning], [bounds],
                                     [view_object], [contents], [styles], [padding], [VO_instance]
-    rederable_True = "'renderable' : True, "
+    renderable_True = "'renderable' : True, "
     section_label = "'"?string_literal?"'"
 
     positioning = "'positioning' :" positioning_contents
