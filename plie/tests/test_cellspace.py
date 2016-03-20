@@ -45,7 +45,7 @@ def test_whole_row():
     c = CellSpace()
     for x, y in [(x, y) for y in range(3) for x in range(3)]:
         c[(x, y)] = x*10 + y
-    got = c[:,0]
+    got = c[:, 0]
     for key in got.keys():
         # make sure we actually got the left most column
         assert got[key] % 10 == 0

@@ -76,4 +76,6 @@ Format:
 Profiling results:
     * Start 3/18 12.0s
     * Commit 587040e 3/18 0.168s
+    * Commit 4ebb27b 3/20 0.467s (but with more functionality than the last)
+    * Commit         3/20 0.267s (CellSpace optimizations
 
