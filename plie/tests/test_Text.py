@@ -51,7 +51,7 @@ def test_string_to_cells_basic():
 def test_center_justify():
     center_justify_test_string = 'abc def ghi'
     b = Bounds(width=5, height=5)
-    t = plie.Text(center_justify_test_string, bounds=b, justify='centered')
+    t = plie.Text(center_justify_test_string, bounds=b, justify='center')
     cells = t.as_cells()
     for row_num in range(b.height):
         # check the edge columns that they're blank/empty

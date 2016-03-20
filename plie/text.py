@@ -107,7 +107,7 @@ class Text:
         # Add each cell to the dictionary
         for x, y in [(x, y) for y in range(self.height) for x in range(self.width)]:
             try:
-                self.cells[(x,y)] = lines[y][x]
+                self.cells[(x,y)] = formatted[y][x]
             except IndexError:
                 self.cells[(x,y)] = ' '
 
