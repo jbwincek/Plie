@@ -331,9 +331,9 @@ class Renderer():
             if self.view[section]['renderable']:
                 new_cells = CellSpace(self.view[section]['instance'].as_cells())
                 bounds = Bounds(new_cells.width, new_cells.height)
-                padding = self._apply_padding(bounds, self.view[section]['padding'])
-                horz_padding = (bounds.width - padding[0]) //2
-                vert_padding = (bounds.height - padding[1]) //2
+                paddinged_size = self._apply_padding(bounds, self.view[section]['padding'])
+                horz_padding = (bounds.width - paddinged_size[0]) //2
+                vert_padding = (bounds.height - paddinged_size[1]) //2
                 position = self._interpret_position(section, bounds)
                 position = position[0]-horz_padding, position[1]-horz_padding
 

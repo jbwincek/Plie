@@ -104,9 +104,11 @@ class Text:
             formatted.append(operation[self.justify](line, self.width))
 
         # Add each cell to the dictionary
-        for y, line in enumerate(formatted):
-            for x, char in enumerate(line):
-                self.cells[(x, y)] = char
+        for x, y in [(x, y) for y in range(self.height) for x in range(self.width)]:
+            try:
+                self.cells[(x,y)] = lines[y][x]
+            except IndexError:
+                self.cells[(x,y)] = ' '
 
         return self.cells
 
