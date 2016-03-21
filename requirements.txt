@@ -1,2 +1,2 @@
-### Plié Requirements ###
+### Plie Requirements ###
 blessed
