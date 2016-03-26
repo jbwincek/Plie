@@ -98,4 +98,70 @@ Possible implications
 
 """
 
+"""
+Experiment 2:
+"""
+
+
+def main_loop():
+    renderer = plie.Renderer(a_view_dict)
+    renderer.display()
+    for key in handle_keyboard(renderer.term):
+        renderer.view.util['handles_input'].send(key)
+
+
+
+"""
+Notes on experiment 2:
+    * I like how it is action based. this decouples the event loop from the actual renderer
+    * I don't like how verbose it is
+        * What about an attribute that does a cachable search for a handles input attribute?
+            * Would leave the current 'handles_input' key there
+            * but would also make an option like renderer.input_handler which would just be a
+              property for the 'handles_input' key
+                * input_handler might not be the best name though
+    * I don't like how 'handles_input' needs to be synchronized with what's handling input
+        * Because it relies on the user, it means Plié doesn't have to handle logic of where to
+          send the keyboard input. So this aspect is both a minus and a plus.
+    * This feels more low level
+        * Like although I see the benefits of having some direct keypress/action based system
+          this:
+            A.) requires the user to roll their own event loop
+            B.) requires the user to worry about keyboard stuff when they might rather be thinking
+                about their own app, layout, and design. (This is the bigger issue)
+                * Does it though:
+                    * No, because once the loop is established, if Plié has good features to
+                      automatically handle normal keyboard input for things like menus and the
+                      like, then most of it happens seamlessly.
+                    * Yes, because every revolves around the keyboard loop, tightly couples with
+                      the keyboard (What about an API for menus, like up(), down(), left(),
+                      right(), select(), back()?)
+                    * Yes, but the action loop has been fundamental to the design of Plié since
+                      almost the beginning.
+    * What about a menu API?
+        * Core questions:
+            * What does API mean in this specific context?
+                * Some way of interacting with interactive things, more specifically:
+                    * An abstraction layer between input (either keyboard or other) and how built
+                      in Plié objects expect information to be passed to them
+            * Could I craft an API that captures the majority of the use cases?
+            * What will Plié lose in using an API here?
+                * A simplicity, it forces the user to learn the api, and forces me to program,
+                  document and maintain an API
+            * What will Plié gain in using an API here?
+                * less coupling with keyboard as the only input mechanism
+                * some explicitness about the actions
+            * counter thoughts:
+                * if the user has their own event handler, based off of some system other than the
+                  keyboard, and if the keyboard input for navigation is well specified, the user
+                  could then just send blessed keyboard commands to whatever is expecting the
+                  commands. Like why rely on making some new api, when Blessed has a format for up
+                  down and etc keyboard keys already. Using that as the 'API' doesn't seem too
+                  obtuse.
+            * Is creating an API here a good idea?
+                * It doesn't seem like it.
+
+
+"""
+
 

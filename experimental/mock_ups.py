@@ -341,3 +341,25 @@ Notes on method 6:
         * This makes it easy to test plie.Renderer since one can just string match, as opposed to
           trying to read the terminal or some other hack like that.
 """
+
+"""
+Mock Up 7: Renderer as a context manager
+"""
+
+from plie import Renderer
+
+def handle_keyboard(terminal):
+    # a generator that yields key-presses
+    with terminal.cbreak():
+        yield terminal.inkey()
+
+# Renderer as a context manager
+with Renderer(a_view_dict) as r:
+    for key in handle_keyboard(r.term):
+        # do something
+
+"""
+Notes on Mock-up 7:
+    * I imagine it is an optional context manager
+        * The user could still use it the old way
+"""
