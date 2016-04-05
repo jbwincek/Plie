@@ -237,10 +237,7 @@ class RendererOld:
         return Bounds(width=width, height=height)
 
 
-
-
 class Renderer():
-
     def __init__(self, size=None, view=None):
         self.term = Terminal()
         if not size:
@@ -258,7 +255,6 @@ class Renderer():
             self.add_view(view)
         else:
             self.view = {}
-
 
     def add_view(self, view):
         """ Take in a valid view dict, and initialize anything that needs initializing,
@@ -302,16 +298,19 @@ class Renderer():
             if cellspace.get((x,y), False):
                 self.cells[(x+position[0],y+position[1])] = cellspace[(x,y)]
 
-    def display(self, update=True):
+    def display(self, update=True, flush=True):
         """ Display fullscreen out to the terminal.
 
          Args:
              update: whether or not to update before displaying
+             flush: whether or not to flush the internal state before rendering
 
          Notes:
             Uses Blessed for fullscreen terminal support.
 
         """
+        if flush:
+            self.cells = CellSpace()
         if update:
             self.update()
 

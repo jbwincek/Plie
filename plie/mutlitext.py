@@ -18,7 +18,6 @@ class MultiText(Text):
     """
 
     def __init__(self, texts=(), bullet_choice='', justify='left', bounds=None):
-
         self.bullet_choice = bullet_choice
         self.justify = justify
         self.cells = {}
@@ -38,6 +37,7 @@ class MultiText(Text):
         self.texts = []
         if texts:
             self._update_texts(texts)
+
 
     def __repr__(self):
         return 'MultiText(texts=%r, bullet_choice=%r, justify=%r, bounds=%r)' % \
@@ -120,3 +120,4 @@ class MultiText(Text):
                 self.texts.append(Text(text=text_elem, justify=self.justify, bounds=elem_bounds))
             else:
                 self.texts.append(Text(text=text_elem, justify=self.justify))
+
