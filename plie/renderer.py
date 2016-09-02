@@ -8,7 +8,6 @@ from plie.defaults import default_sections
 import re
 
 
-
 class RendererOld:
     """ The thing that translates Views and View objects into actual text on the screen.
 
@@ -238,8 +237,11 @@ class RendererOld:
 
 
 class Renderer():
-    def __init__(self, size=None, view=None):
-        self.term = Terminal()
+    def __init__(self, size=None, view=None, terminal=None):
+        if not terminal:
+            self.term = Terminal()
+        else:
+            self.term = terminal
         if not size:
             self.size = (self.term.width, self.term.height)
         else:

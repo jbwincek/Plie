@@ -7,7 +7,8 @@ import time
 
 
 class Navigable():
-    """Navigable ABC"""
+    """Navigable ABC
+        (note: not currently actually abstract 9/1/16)"""
     def __init__(self, **kwargs):
         #raise AttributeError('Navigable init called')
         pass
@@ -62,7 +63,9 @@ class Navigable1D():
 
 
 class NavigableMenu(Navigable1D, plie.MultiText):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, highlight='--', **kwargs):
+        self.highlight = highlight
+        self.normal = ''  # r'\\x1b(B\\x1b[m'
         super(NavigableMenu, self).__init__(**kwargs)
 
     def __str__(self):
@@ -71,10 +74,10 @@ class NavigableMenu(Navigable1D, plie.MultiText):
             if which == self.cursor_location:
                 for i, line in enumerate(str(text_elem).split('\n')):
                     if i == 0:  # the first line gets bulleted
-                        lines.append(self.bullet_choice + '--' + line)
+                        lines.append(self.bullet_choice + self.highlight + line + self.normal)
                     else:  # remainders are just indented
                         blank_space = ' ' * len(self.bullet_choice)
-                        lines.append(blank_space + '--' + line)
+                        lines.append(blank_space + self.highlight + line + self.normal)
             else:
                 for i, line in enumerate(str(text_elem).split('\n')):
                     if i == 0:

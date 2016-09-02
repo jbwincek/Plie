@@ -1,11 +1,6 @@
 import plie
 import time
 
-item_three = """item three is significantly longer than the others, it shows that MultiText
-can handle multiple lines well, including making sure the indent is right when a list is
-bulleted. This could be lorem ipsum, but it's not."""
-
-
 def run():
     some_long_text_variable = item_three * 3
 
@@ -74,6 +69,11 @@ def run():
     renderer = plie.Renderer(view=a_view)
     renderer.display()
     time.sleep(10)
+
+
+item_three = """item three is significantly longer than the others, it shows that MultiText
+can handle multiple lines well, including making sure the indent is right when a list is
+bulleted. This could be lorem ipsum, but it's not."""
 
 
 if __name__ == '__main__':

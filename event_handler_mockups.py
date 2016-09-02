@@ -521,7 +521,7 @@ def run_11():
         renderer.display()
 
 
-# run_11()
+run_11()
 
 """
 Notes on Experiment 11:
@@ -532,7 +532,7 @@ Notes on Experiment 11:
     * yanking the Terminal instance out of renderer seems like an okay idea at least, not great,
     but okay
 
-
+"""
 
 
 
@@ -548,45 +548,45 @@ Version of Method 3 that didn't work but saving it just in case
 """
 
 
-
-import asyncio
-from blessed import Terminal
-from functools import partial
-
-
-# with open('wit_key', 'r') as key_file:
-#     KEY = key_file.read().strip()
-
-@asyncio.coroutine
-def handle_keyboard(future):
-    term = Terminal()
-    with term.cbreak():
-        keypress = term.inkey()
-    #print('got: {}'.format(keypress))
-    future.set_result(keypress)
-
-
-async def handle_audio():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
-    with microphone as source:
-        recognizer.adjust_for_ambient_noise(source)
-        audio_data = await recognizer.listen(source)
-    print('listening...')
-    response = await recognizer.recognize_wit(audio_data, KEY, show_all=True)
-    print('got: {}'.format(response))
-
-async def b_handle_keyboard(loop):
-    future = asyncio.Future()
-    asyncio.ensure_future(handle_keyboard(future))
-    loop.run_until_complete(future)
-    result = await future.result()
-    return result
-
-def run_3():
-    loop = asyncio.get_event_loop()
-
-    loop.create_task(b_handle_keyboard(loop))
+#
+# import asyncio
+# from blessed import Terminal
+# from functools import partial
+#
+#
+# # with open('wit_key', 'r') as key_file:
+# #     KEY = key_file.read().strip()
+#
+# @asyncio.coroutine
+# def handle_keyboard(future):
+#     term = Terminal()
+#     with term.cbreak():
+#         keypress = term.inkey()
+#     #print('got: {}'.format(keypress))
+#     future.set_result(keypress)
+#
+#
+# async def handle_audio():
+#     recognizer = sr.Recognizer()
+#     microphone = sr.Microphone()
+#     with microphone as source:
+#         recognizer.adjust_for_ambient_noise(source)
+#         audio_data = await recognizer.listen(source)
+#     print('listening...')
+#     response = await recognizer.recognize_wit(audio_data, KEY, show_all=True)
+#     print('got: {}'.format(response))
+#
+# async def b_handle_keyboard(loop):
+#     future = asyncio.Future()
+#     asyncio.ensure_future(handle_keyboard(future))
+#     loop.run_until_complete(future)
+#     result = await future.result()
+#     return result
+#
+# def run_3():
+#     loop = asyncio.get_event_loop()
+#
+#     loop.create_task(b_handle_keyboard(loop))
 
 # run_3()
 

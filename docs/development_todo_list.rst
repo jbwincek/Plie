@@ -24,6 +24,7 @@ Format:
             * [ ][ ][ ] speed improvements
     * [ ][ ][i] Renderer
         * [d][t][i] init
+            * [d][ ][ ] handle passed in terminals
         * [d][ ][i] formulate
             * [d][t][i] basic formulate (only one char fill)
             * [d][ ][i] advanced formulate (works with real text objects)
@@ -34,6 +35,8 @@ Format:
         * [d][t][i] _extract_bounds_information
             * [ ] decide if bounding boxes can be negative, and what that would mean
         * [ ][ ][ ] handling of view stacks
+            * [ ] resolve the issue with ChainMapss not working with nestled layers of
+                  ChainMapss
         * [ ][ ][ ] application of styles
             * [ ][ ][ ] border
             * [ ][ ][ ] background
@@ -54,6 +57,18 @@ Format:
         * [ ]   [ ] Create mockup
         * [ ]   [ ] continue exploring ways to integrate multiple invent systems -cough- asyncio
     * [ ][ ][ ] Docs
+    * [ ][ ][ ] Navigable
+        * [ ] Migrate Navigable stuff into the main project directory
+        * [ ][ ][ ] Navigable1D
+            * [ ] Document init
+            * [ ] Document handles_input
+            * [ ] Document up
+            * [ ] Document down
+            * [ ] Think about how select will actually be used in practice, not just in a mockup
+            * [ ] Document select
+            * [ ] Address inheritance from ABC Navigable
+        * [ ][ ][ ] NavigableMenu
+            * [ ][ ][ ] handle highlighting and dehighlighting of selected items
 
     * [ ][ ][ ] Other
         * [x] learn more about ABCs
