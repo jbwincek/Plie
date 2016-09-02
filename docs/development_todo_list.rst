@@ -71,6 +71,7 @@ Format:
             * [ ][ ][ ] handle highlighting and dehighlighting of selected items
 
     * [ ][ ][ ] Other
+        * [ ] create a lot more tests
         * [x] learn more about ABCs
         * [ ] use that knowledge in the Renderable ABC
         * [ ] update Text and MultiText to subclass Renderable
