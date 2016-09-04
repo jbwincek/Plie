@@ -27,16 +27,16 @@ class CellSpace(UserDict):
                 self.height = key[1] + 1
 
     def __getitem__(self, index):
-        cls = type(self)
-        new_cells = cls()
-        width = self.width
-        height = self.height
 
         try:
             # handle the case where both items are integers [int,int] aka cell case
             return self.data[(index[0], index[1])]
 
         except TypeError:
+            cls = type(self)
+            new_cells = cls()
+            width = self.width
+            height = self.height
             if isinstance(index, tuple) and isinstance(index[0], slice) and isinstance(index[1],
                                                                                         slice):
                 # handle the case where both items are slices aka box case
