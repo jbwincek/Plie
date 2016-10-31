@@ -57,20 +57,26 @@ class Navigable1D():
 
 
 class NavigableMenu(Navigable1D, MultiText):
-    def __init__(self, *args, highlight='--', **kwargs):
-        self.highlight = highlight
-        self.normal = ''  # r'\\x1b(B\\x1b[m'
+    def __init__(self, *args, highlight='--', term=None, **kwargs):
+        if term:
+            self.term = term
+            self.highlight = term.blue
+            self.normal = term.normal
+        else:
+            self.highlight = highlight
+            self.normal = ''  # r'\\x1b(B\\x1b[m'
+
         super(NavigableMenu, self).__init__(**kwargs)
 
     def __str__(self):
         lines = []
         for which, text_elem in enumerate(self.texts):  # process each text element
-            if which == self.cursor_location:
+            if which == self.cursor_location:  # handles the selected menu element case
                 for i, line in enumerate(str(text_elem).split('\n')):
                     if i == 0:  # the first line gets bulleted
                         lines.append(self.bullet_choice + self.highlight + line + self.normal)
                     else:  # remainders are just indented
-                        blank_space = ' ' * len(self.bullet_choice)
+                        blank_space = ' ' * self.term.length(self.bullet_choice)
                         lines.append(blank_space + self.highlight + line + self.normal)
             else:
                 for i, line in enumerate(str(text_elem).split('\n')):

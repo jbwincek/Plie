@@ -3,7 +3,7 @@ from plie.view import Bounds
 from plie.cellspace import CellSpace
 
 
-def borderer(bounds, cells=None, border_style='default'):
+def borderer(bounds, cells=None, term=None, border_style='default'):
     """ Creates a border around an area of the given size
 
     borderer will work with either just a size parameter, producing only the cells for the border,
@@ -32,25 +32,25 @@ def borderer(bounds, cells=None, border_style='default'):
         new_cells = CellSpace()
     else:
         new_cells = cells
-    new_cells[(0,0)] = BORDER_STYLE[border_style]['top_left']
-    new_cells[(bounds.width - 1,0 )] = BORDER_STYLE[border_style]['top_right']
+    new_cells[(0, 0)] = BORDER_STYLE[border_style]['top_left']
+    new_cells[(bounds.width - 1, 0)] = BORDER_STYLE[border_style]['top_right']
     new_cells[(0, bounds.height - 1)] = BORDER_STYLE[border_style]['bottom_left']
     new_cells[(bounds.width - 1, bounds.height - 1)] = BORDER_STYLE[border_style]['bottom_right']
     if bounds.width >= 3:
         span = bounds.width - 2
-        for x in range(1, span+1): #offset by one to not mess up the corners
-            new_cells[(x,0)] = BORDER_STYLE[border_style]['horizontal']
+        for x in range(1, span+1):  # offset by one to not mess up the corners
+            new_cells[(x, 0)] = BORDER_STYLE[border_style]['horizontal']
             new_cells[(x, bounds.height-1)] = BORDER_STYLE[border_style]['horizontal']
     if bounds.height >= 3:
-        span = bounds.height -2
-        for y in range(1, span+1):
-            new_cells[(0,y)] = BORDER_STYLE[border_style]['vertical']
+        span = bounds.height - 2
+        for y in range(1, span + 1):
+            new_cells[(0, y)] = BORDER_STYLE[border_style]['vertical']
             new_cells[(bounds.width-1, y)] = BORDER_STYLE[border_style]['vertical']
 
     return new_cells
 
 
-def backgrounder(bounds, cells = None, background = '.'):
+def backgrounder(bounds, cells=None, background='.', term=None):
     """Replace all empty cells with the specified background cell,
         or fill size bounds with background str
 

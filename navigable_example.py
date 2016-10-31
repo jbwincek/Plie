@@ -56,9 +56,7 @@ def run():
                 'justify': 'left'
             },
             'styles': [
-                (plie.borderer, {'border_style': 'default'}),
-               (plie.backgrounder, {'background': ' '})
-                ],
+                (plie.borderer, {'border_style': 'default'}),],
             'padding': 1,
         },
         'footer': {
@@ -82,7 +80,7 @@ def run():
 
     term = blessed.Terminal()
     #nav = Navigable1D(wrap_around=True)
-    renderer = plie.Renderer(view=a_view)
+    renderer = plie.Renderer(view=a_view, terminal=term)
     renderer.display()
     for key in handle_keyboard(term):
         renderer.view['body_left']['instance'].handles_input(key)

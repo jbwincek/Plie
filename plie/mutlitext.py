@@ -2,6 +2,8 @@ from textwrap import wrap
 from plie.text import Text
 from plie.view import Bounds
 
+class DunFuckedUpError(Exception):
+    pass
 
 class MultiText(Text):
     """ MultiText displays sequences of text, including bulleted lists.
@@ -17,7 +19,8 @@ class MultiText(Text):
 
     """
 
-    def __init__(self, texts=(), bullet_choice='', justify='left', bounds=None):
+    def __init__(self, texts=(), bullet_choice='', justify='left', bounds=None,
+                 **kwargs):
         self.bullet_choice = bullet_choice
         self.justify = justify
         self.cells = {}
@@ -59,12 +62,12 @@ class MultiText(Text):
                 if i == 0:
                     lines.append(self.bullet_choice + line)
                 else:
-                    blank_space = ' ' * len(self.bullet_choice)
+                    blank_space = ' ' * self.term.length(self.bullet_choice)
                     lines.append(blank_space + line)
         return '\n'.join(lines)
 
     def __len__(self):
-        return len(self.texts)
+        return self.term.length(self.texts)
 
     def __getitem__(self, index):
         return self.texts[index]
@@ -102,20 +105,35 @@ class MultiText(Text):
         Returns: a dictionary cell space representation of all the contained text objects
         """
 
-        output_lines = str(self).split('\n')
+        # TODO see note:
+        # NOTE:
+        # This currently treats terminal escape sequences as normal characters, as such
+        # it breaks line widths for strings with escape sequences. Terminal.length from
+        # blessed will get the printable length of a string, it is based off of the
+        # bless.Sequence class
+
+        temp_lines = str(self).split('\n')
+        output_lines = [ ]
+        for line in temp_lines:
+            output_lines.append(self.term.split_seqs(line))
         cells_to_output = {}
-        for x, y in [(x, y) for y in range(self.height) for x in range(self.width)]:
-            try:
-                cells_to_output[(x, y)] = output_lines[y][x]
-            except IndexError:
-                cells_to_output[(x, y)] = ''
+        for y in range(self.height):
+            for x in range(self.width):
+                try:
+                    current_char = output_lines[y][x]
+                    if self.term.length(current_char) == 0:
+                        #raise DunFuckedUpError(repr(current_char + ' ({}, {})'.format(x,y)))
+                        cells_to_output[(x, y)] = current_char + '--'
+                    cells_to_output[(x, y)] = current_char
+                except IndexError:
+                    cells_to_output[(x, y)] = '.'
         return cells_to_output
 
     def _update_texts(self, texts):
         for text_elem in texts:
             if self.width:
-                num_lines = len(wrap(text_elem, self.width, replace_whitespace=False))
-                space_remaining_after_bullet = self.width - len(self.bullet_choice)
+                num_lines = len(self.term.wrap(text_elem, self.width, replace_whitespace=False))
+                space_remaining_after_bullet = self.width - self.term.length(self.bullet_choice)
                 elem_bounds = Bounds(space_remaining_after_bullet, num_lines)
                 self.texts.append(Text(text=text_elem, justify=self.justify, bounds=elem_bounds))
             else:

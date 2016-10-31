@@ -1,6 +1,7 @@
 from collections import namedtuple
 from functools import partial
 from textwrap import wrap
+import blessed
 
 
 class Text:
@@ -27,11 +28,13 @@ class Text:
     Returns: an initialized Text object
 
         """
-    def __init__(self, text='', callout=None, justify='left', bounds=None, replace_whitespace=True):
+    def __init__(self, text='', callout=None, justify='left', bounds=None,
+                 replace_whitespace=True, **kwargs):
         self.callout = callout
         self.justify = justify
         self.cells = {}
         self._replace_whitespace = replace_whitespace
+        self.term = blessed.Terminal()
         try:
             # preferred method for handling bounds (as a namedtuple)
             self.width = bounds.width
@@ -45,7 +48,8 @@ class Text:
                 self.width = 0
                 self.height = 0
         if self.width:
-            self.text = '\n'.join(wrap(text, self.width, replace_whitespace=self._replace_whitespace))
+            self.text = '\n'.join(self.term.wrap(text, self.width,
+                                        replace_whitespace=self._replace_whitespace))
         else:
             self.text = text
 
@@ -56,6 +60,9 @@ class Text:
     def __str__(self):
         # TODO decide if this should have styling and formatting applied to it
         return self.text
+
+    def __len(self):
+        return self.term.length(self.text)
 
     def update(self, bounds=None, text=None, **kwargs):
         """For changing internal state, including updating the text to display.
@@ -69,7 +76,8 @@ class Text:
             self._update_bounds(bounds)
         if text:
             if self.width:
-                self.text = '\n'.join(wrap(text, self.width, replace_whitespace=self._replace_whitespace))
+                self.text = '\n'.join(self.term.wrap(text, self.width,
+                                            replace_whitespace=self._replace_whitespace))
             else:
                 self.text = text
         if kwargs.get('callout', False):
@@ -94,15 +102,15 @@ class Text:
         strings as the values.
 
         """
-        operation = {'left': partial(str.ljust),
-                     'center': partial(str.center),
-                     'right': partial(str.rjust)}
+        operation = {'left': partial(self.term.ljust),
+                     'center': partial(self.term.center),
+                     'right': partial(self.term.rjust)}
 
         lines = self.text.split('\n')
-        formatted = []
+        formatted = [ ]
         for line in lines:
             # apply the appropriate string method to each line
-            formatted.append(operation[self.justify](line, self.width))
+            formatted.append(self.term.split_seqs(operation[self.justify](line, self.width)))
 
         # Add each cell to the dictionary
         for x, y in [(x, y) for y in range(self.height) for x in range(self.width)]:

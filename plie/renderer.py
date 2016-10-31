@@ -324,11 +324,21 @@ class Renderer():
 
         Returns: A string that could render the whole screen if printed.
         """
-        output_list = []
+        output_list = [ ]
         for y in range(self.size[1]):
             if y > 0:
                 output_list.append('\n')
             output_list.extend([self.cells.get((x, y), ' ') for x in range(self.size[0])])
+            # line_list = [ ]
+            # invisible_character_spacing = 0
+            # for x in range(self.size[0]):
+            #     current_char = self.cells.get((x, y), ' ')
+            #     if self.term.length(current_char) == 0:
+            #         invisible_character_spacing += 1
+            #     line_list.append(current_char)
+            # line_list.append('s' * invisible_character_spacing)
+            # output_list.extend(line_list)
+
         return ''.join(output_list)
 
     def update(self):
@@ -351,8 +361,8 @@ class Renderer():
                 if self.view[section]['styles']:
                     for style_tuple in self.view[section]['styles']:
                         paddingless_bounds = bounds[0] + 2*horz_padding, bounds[1] + 2*horz_padding
-                        self.composite(style_tuple[0](paddingless_bounds, **style_tuple[1]),
-                                       position)
+                        self.composite(style_tuple[0](paddingless_bounds, term=self.term,
+                                                      **style_tuple[1]), position)
 
                 content_position = position[0] + horz_padding, position[1] + vert_padding
                 self.composite(new_cells, content_position)
@@ -374,11 +384,11 @@ class Renderer():
 
         renderable = self.view[section]['view_object']
         kwargs = self.view[section]['contents']
-        self.view[section]['instance'] = renderable(bounds=bounds, **kwargs)
+        self.view[section]['instance'] = renderable(bounds=bounds, term=self.term, **kwargs)
 
     def _apply_padding(self, bounds, padding):
         """ Interpret the padding information, and the apply that to the bounds
-
+        
         Args:
             bounds:
             padding: a padding representation

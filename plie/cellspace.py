@@ -17,17 +17,15 @@ class CellSpace(UserDict):
         self.height = 1
         super().__init__(*args, **kwargs)
 
-
     def __setitem__(self, key, item):
         self.data[key] = item
-        if isinstance(key,(tuple,list,set)):
+        if isinstance(key, (tuple, list, set)):
             if key[0] >= self.width:
                 self.width = key[0] + 1
             if key[1] >= self.height:
                 self.height = key[1] + 1
 
     def __getitem__(self, index):
-
         try:
             # handle the case where both items are integers [int,int] aka cell case
             return self.data[(index[0], index[1])]
