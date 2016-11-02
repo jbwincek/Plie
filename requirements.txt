@@ -1,2 +1,0 @@
-### Plie Requirements ###
-blessed
