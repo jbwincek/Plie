@@ -9,44 +9,38 @@ Some version of Model View Controller, Model ViewModel View, or presentation abs
 Developers Notes About This Document
 ____________________________________
 
-    * ID<number><letter> stands for Implementation Detail, followed by which detail, and then the multiple options for that implementation detail. This is for ease of exploring and referring to different options.
     * This is a living document / my scratch pad for reasoning about Plié
-
-universal dumb drawer
-_____________________
-
-    * draws UIDFT to the screen
-    * be as basic / dumb as possible
-        * cleverness should happen in Views / Presenters if at all
-    * takes UIDFT and some offset from the top left corner and then draws the text there
-        * indentation: split the UIDFT on newlines, and instead of just printing new lines, move the drawing cursor down one line and back to the X offset. This is slight cleverness, but the rule is explicit, and then it lets views/presenters do cleverness like unindent or reindent if they want to. The UDD doesn't have to worry about that.
-    * possible alternative implementations:
-        * split on newlines in UIDFT input (ID1a)
-            * complexity in parsing newlines (that's minor though),
-        * UIDFT is a list of lines (ID1b)
-            * would newline for each line, but would allow UIDFT to newline midline if needed, I can't think of why that would be needed though.
-            * introduces complexity in making UIDFT not just a basically printable string
+    * Implementation Details: Like a choose your own adventure of library design 
+        * Naming scheme: ID<number><letter>[<.number><letter>] 
+        * Stands for Implementation Detail, followed by which detail, and then the option specifier for that implementation detail, followed by optional dependent implementation detail, and the option specifier for that depdendent implementation detail. 
+            Ex: ID2a1b: ID2 is the overall architecture of the library, a is the PAC based choice, 1 is __________ question, b is _______ choice
+        * Basically question number, followed by answer/choice letter. This is for ease of exploring and referring to different options. 
+            
+    
 
 
-Universal Interoperable Drawing Format of Text
-______________________________________________
+Pending Implementation Decisions:
+_________________________________
 
-    * The specification of how to pass text/data from anything that draws to the universal dumb drawer
-    * possible alternative implementations
-        * ID1a: UDD splits newlines in the corpus of UIDFT
-        * ID1b: UIDFT is a list of lines
+* ID1: Format of UIDFT
+    * ID1a: UIDFT is a long string with newlines in it. Offset from top left corner is external to UIDFT. UDD splits the UIDFT on newlines, maintaining the indent from the initial offset. All other formatting is handled in the text of the UIDFT. 
+    * ID1b: UIDFT is a list of lines. Offset from top left corner is external to UIDFT. UDD prints one list element per line maintaing the indent from the initial offset. All other formatting is handled in the text of the UIDFT lines. 
+    * ID1c: Like ID1a except, UIDFT is an object containing both the internal string and the offset. 
+    * ID1d: Like ID1b except, UIDFT is an object containing both the list of lines and the offset. 
+* ID2: overall architecture of the library
+    * ID2a: PAC based
+    * ID2b: MVC based
+    * ID2c: MVP based
+* ID2a1: whether AMUC does the draw call
+    * ID2a1a: AMUC is a pure function, leaving the draw call up to Control
+    * ID2a1b: AMUC is a function with side effects, that side effect is the draw call. 
 
-Pure Function Views / Presenters
-________________________________
-
-    * Takes a particular input from a model and then converts that to UIDFT for drawing with the UDD
-    * Where awareness of screen size is
-    * could be called Abstraction/Model to UIDFT Converter or AMUC for short
 
 Models / Abstractions
 _____________________
 
     * Where the actual data is held
+
 
 Library Architecture
 ____________________
@@ -67,6 +61,79 @@ ____________________
                 * Centralized Controller: handle everything in one place, would require updating for each model or view that's added that needs some new way of being interacted with, general purpose so less duplication, but general purpose also means more complicated. Input only goes one place initially, rather than having input handling be handed off, which seems easier in a way. 
                 * Individual Controllers + Router: Router handles the actual input, then sends it to the correct controller, the controller is model/view specific. This means controllers are specialized, which is simplier. But this also means there needs to be a specialized controller for every model/view. Input only goes one place initially, rather than having input handling be handed off, which seems easier in a way.  
                 * Individual Controllers: input goes diretly to the specialized controller. Needs some way of keeping track where the input should go, probably through some method of handing off input to the various specialized controllers.  
+
+PAC Architecture details (ID2a):
+    * Follow through of input in a PAC architecture, looking specifically at a menu system. Consider a menu with children of menu elements. Each menu element knows its parent. On a keyboard event, a down arrow for example, the currently active menu item processes that event. Processes can mean: do internally or deactivate itself and then pass the event up to it's parent. The parent recieves the event, interpets a down arrow as a way of navigating through the menu, then activates the next menu element in the menu and tells it it is selected. Activates means passing input handling responsibility onto it. 
+    What all this means from a broader architectural standpoint? PAC elements are arranged in a tree like graph. Input is recieved on the leafs, and propogated towards the root of the tree as needed. 
+    Though this example is with a one dimensional menu, it could just as easily work for a 2D menu like thing, like a character field. All that is required is that the menu (or equivilent) knows the layout of whatever it is representing, which is intrinsic to itself. 
+    * How drawing works in PAC: Control registers some event requiring drawing or redrawing. Control gets data from Abstraction (flow of execution breifly enters and then exits from abstraction/model component). Control calls AMUC with data from Abstraction (flow of execution enters Presentation). AMUC converts input to UIDFT and then [see options]:
+        * ID2a1a: AMUC returns the UIDFT. Flow of execution returns to Control. Control then calls UDD with UIDFT. 
+        * ID2a1b: AMUC calls UDD with UIDFT. 
+
+
+Current presentation component
+______________________________
+
+AMUCs, UDD and UIDFT
+    * UIDFT: Universal Interoperable Drawing Format of Text
+        * A format of text that is basically ready for printing in a terminal. It gets passed to the UDD to do the actual printing. 
+    * UDD: Universal Dumb Drawer
+    * AMUC: Adapter/Model to UIDFT Converter
+
+
+universal dumb drawer 
+_____________________
+
+This is specifically for terminal rendering 
+
+    * draws UIDFT to the screen
+    * be as basic / dumb as possible
+        * cleverness should happen in Views / Presenters if at all
+    * takes UIDFT and some offset from the top left corner and then draws the text there
+        * indentation: split the UIDFT on newlines, and instead of just printing new lines, move the drawing cursor down one line and back to the X offset. This is slight cleverness, but the rule is explicit, and then it lets views/presenters do cleverness like unindent or reindent if they want to. The UDD doesn't have to worry about that.
+    * possible alternative implementations:
+        * split on newlines in UIDFT input (ID1a)
+            * complexity in parsing newlines (that's minor though),
+        * UIDFT is a list of lines (ID1b)
+            * would newline for each line, but would allow UIDFT to newline midline if needed, I can't think of why that would be needed though.
+            * introduces complexity in making UIDFT not just a basically printable string
+
+
+UIDFT - Universal Interoperable Drawing Format of Text
+______________________________________________________
+
+    * The specification of how to pass text/data from anything that draws to the universal dumb drawer
+    * See Implementation Detail 1 (ID1a-d)
+
+
+AMUC - Pure Function Views / Presenters
+_______________________________________
+
+    * Takes a particular input from a model and then converts that to UIDFT for drawing with the UDD
+    * Where awareness of screen size is
+    * could be called Abstraction/Model to UIDFT Converter or AMUC for short
+
+
+Abstraction Storage Format
+__________________________
+    
+    * Design considerations:
+        * The idea of an interoperable format that the abtraction outputs seems good
+
+
+TextBase - An object, with text and styles associated with it. 
+    * Styles like background, text color, italic, bold
+TextContainer - Is one or more of the following a TextBase or a TextContainer
+    * Can hold multiple text objects and containers as needed.
+    * Used for creating a bit of text with varied styles in it. 
+
+* choices for the name of the the class of all the things that make up the library
+    * widget - overused and annoying, but also seems to be the universal
+    * corps - (pronounced kawr) french for body, plays off of Plié as a ballet term
+    * pas - (pronounced pah) french for step
+    * dispositif - 
+    * irality
+    * bitoniau(x) - french for little thingy 
 
 
 
