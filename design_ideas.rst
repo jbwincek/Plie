@@ -12,8 +12,8 @@ ____________________________________
 * This is a living document / my scratch pad for reasoning about Plié
 * Implementation Details: Like a choose your own adventure of library design 
     * Naming scheme: ID<number><letter>[<.number><letter>] 
-    * Stands for Implementation Detail, followed by which detail, and then the option specifier for that implementation detail, followed by optional dependent implementation detail, and the option specifier for that depdendent implementation detail. 
-        Ex: ID2a1b: ID2 is the overall architecture of the library, a is the PAC based choice, 1 is __________ question, b is _______ choice
+    * Stands for Implementation Detail, followed by which detail, and then the option specifier for that implementation detail, followed by optional dependent implementation detail, and the option specifier for that dependent implementation detail. 
+        * Ex: ID2a1b: ID2 is the overall architecture of the library, a is the PAC based choice, 1 is __________ question, b is _______ choice
     * Basically question number, followed by answer/choice letter. This is for ease of exploring and referring to different options. 
             
     
@@ -157,29 +157,30 @@ _____________________________
 
 Menu Container
 ______________
-    * An interactive menu
-    * Knows the order of the children
-    * Children are menu elements
-    * Menu Elements are a bit of text that can handle interactivity, including processing basic input. Like up down arrows, or left right, or enter/back. This allows it to do a little bit of processing. Maybe that means activating whatever the menu element signifies or handing off control to something outside of its scope. 
-        * what happens when something is outside of its scope:
-            * The menu element defocuses itself, then sends an event (using an atomic message queue) to its parent (the menu container), the menu container receives the event and then processes it. 
-            * concrete example: A menu element in a menu of vertically stacked menu elements gets a down arrow. Menu element A defocuses, sends event to parent, parent sees event from menu element A, processes the down arrow as a command to activate and give focus to menu element B. Container sends event to menu element B telling it this. Menu element B processes the event, and then sets up the input handling (gains focus).
-    * Menu Element base class
-        * could handle the basic processing functionality. The actual processing function should be a simple case switch function which delegates out to other functions to actually act on the input given. This way subclasses can override those functions. 
-            * Concrete example: the processor detects a down arrow and then calls handle_down_arrow(), that way subclasses can write their own handle_down_arrow(). 
+
+* An interactive menu
+* Knows the order of the children
+* Children are menu elements
+* Menu Elements are a bit of text that can handle interactivity, including processing basic input. Like up down arrows, or left right, or enter/back. This allows it to do a little bit of processing. Maybe that means activating whatever the menu element signifies or handing off control to something outside of its scope. 
+    * what happens when something is outside of its scope:
+        * The menu element defocuses itself, then sends an event (using an atomic message queue) to its parent (the menu container), the menu container receives the event and then processes it. 
+        * concrete example: A menu element in a menu of vertically stacked menu elements gets a down arrow. Menu element A defocuses, sends event to parent, parent sees event from menu element A, processes the down arrow as a command to activate and give focus to menu element B. Container sends event to menu element B telling it this. Menu element B processes the event, and then sets up the input handling (gains focus).
+* Menu Element base class
+    * could handle the basic processing functionality. The actual processing function should be a simple case switch function which delegates out to other functions to actually act on the input given. This way subclasses can override those functions. 
+        * Concrete example: the processor detects a down arrow and then calls handle_down_arrow(), that way subclasses can write their own handle_down_arrow(). 
 
 
 Text Fields
 ___________
 
-    * Places to put text
-    * Called label in Kivy
+* Places to put text
+* Called label in Kivy
 
 
 Scrollable container
 ____________________
 
-    * It makes whatever is inside of it scrollable (just a neat idea for now)
+* It makes whatever is inside of it scrollable (just a neat idea for now)
 
 
 Tileable Interactive Monoline Text Fields - TIMTF
@@ -187,34 +188,34 @@ _________________________________________________
 
 Contains a bit of text with optional styling for editing, only one of each style type per TIMTF
 
-    * In abstraction: a bit of text, where it goes, how big the field is, cursor location and what styles should be applied to it
-    * In control: process input
-        * normal letter keys and numbers split on cursor location, then join the left, key and right parts back together
-        * arrow keys
-            * left and right change decrement or increment the cursor location
-                * if cursor decrements below zero, then the PAC element defocuses, and pases the event to parent (so parent can tell the TIMTF to the left that it is now active and its cursor position is on the far right)
-                * The converse applies for if the cursor increments past the bounds
-            * up and down causes defocus, and passing of the event up to the parent
+* In abstraction: a bit of text, where it goes, how big the field is, cursor location and what styles should be applied to it
+* In control: process input
+    * normal letter keys and numbers split on cursor location, then join the left, key and right parts back together
+    * arrow keys
+        * left and right change decrement or increment the cursor location
+            * if cursor decrements below zero, then the PAC element defocuses, and pases the event to parent (so parent can tell the TIMTF to the left that it is now active and its cursor position is on the far right)
+            * The converse applies for if the cursor increments past the bounds
+        * up and down causes defocus, and passing of the event up to the parent
 
 Tileable Interactive Text Field Container
 _________________________________________
 
-    * Needs to handle the case where the left most decrements from the left most column and then can't go any farther
-    * needs to handle the converse for the right most
-    * needs to handle line splitting/wrapping
-        * How is TIMTFs extending over the newline at the end handled.
-            * If presentation happened at the container level rather than individual level, then each TIMTF could properly format its own output, and then the container could handle the line wrapping if needed. This would mean TIMTFs wouldn't need to know where they go specifically, instead the container would have to sort that out based on the order and content of all the TIMTFs 
-    * needs to handle moving between TIMTFs 
-    * needs to handle TIMTFs changing length and then shifting over the TIMTFs after it
+* Needs to handle the case where the left most decrements from the left most column and then can't go any farther
+* needs to handle the converse for the right most
+* needs to handle line splitting/wrapping
+    * How is TIMTFs extending over the newline at the end handled.
+        * If presentation happened at the container level rather than individual level, then each TIMTF could properly format its own output, and then the container could handle the line wrapping if needed. This would mean TIMTFs wouldn't need to know where they go specifically, instead the container would have to sort that out based on the order and content of all the TIMTFs 
+* needs to handle moving between TIMTFs 
+* needs to handle TIMTFs changing length and then shifting over the TIMTFs after it
 
-    .. _ID5:
+.. _ID5:
 
-    * thoughts about children - there seem like two ways to store data about the TITF children of the container:
-        * In a data structure in the abstraction of the abstraction of the parents. (ID5a)
-        * In a graph based system where the children know their neighbors and are updated on changes. I like this option better. It potentially descreases coupling. (ID5b)
-            * How can the container efficiently iterate over all the children.
-                * One way to is for container control to pull the neighbor out of the TIMTF, and then use that to go to the next TIMTF. This increases coupling because it depends on a consistent storage method for neighbors (stops interchanging of other things in the place of TIMTFs). 
-                * Another way could be to have a get_neighbor(direction) method in the TIMTF. This gives a consistent interface, which allows interoperablity. This also seems slightly less pythonic, since it uses a getter (and perhaps a setter). One wonders then if there should be an instance property. But that seems weird, since obstensibily it would be an instance property of the control. 
+* thoughts about children - there seem like two ways to store data about the TITF children of the container:
+    * In a data structure in the abstraction of the abstraction of the parents. (ID5a)
+    * In a graph based system where the children know their neighbors and are updated on changes. I like this option better. It potentially descreases coupling. (ID5b)
+        * How can the container efficiently iterate over all the children.
+            * One way to is for container control to pull the neighbor out of the TIMTF, and then use that to go to the next TIMTF. This increases coupling because it depends on a consistent storage method for neighbors (stops interchanging of other things in the place of TIMTFs). 
+            * Another way could be to have a get_neighbor(direction) method in the TIMTF. This gives a consistent interface, which allows interoperablity. This also seems slightly less pythonic, since it uses a getter (and perhaps a setter). One wonders then if there should be an instance property. But that seems weird, since obstensibily it would be an instance property of the control. 
     
 
 
