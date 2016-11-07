@@ -19,8 +19,10 @@ ____________________________________
     
 
 
-Pending Implementation Decisions:
-_________________________________
+Implementation Decisions:
+_________________________
+
+Some of these are pending. Some are decided. 
 
 * ID1: Format of UIDFT
     * ID1a: UIDFT is a long string with newlines in it. Offset from top left corner is external to UIDFT. UDD splits the UIDFT on newlines, maintaining the indent from the initial offset. All other formatting is handled in the text of the UIDFT. 
@@ -28,12 +30,24 @@ _________________________________
     * ID1c: Like ID1a except, UIDFT is an object containing both the internal string and the offset. 
     * ID1d: Like ID1b except, UIDFT is an object containing both the list of lines and the offset. 
 * ID2: overall architecture of the library
-    * ID2a: PAC based
+    * ID2a_: PAC based
     * ID2b: MVC based
     * ID2c: MVP based
 * ID2a1: whether AMUC does the draw call
     * ID2a1a: AMUC is a pure function, leaving the draw call up to Control
     * ID2a1b: AMUC is a function with side effects, that side effect is the draw call. 
+* ID3: Which way Z-depth goes
+    * Note: see usablity survey results for people's intuition on the matter
+    * ID3a: Lower Z-depth numbers mean shallower and therfore more frontwards
+    * ID3b: Higher Z-depth numbers means more on top and therefore more frontwards
+* ID4: What draws, individual elements or containers of elements
+    * ID4a: Individual elements call a draw function and draw just themselves
+        * ID4a1a: Uses a sharded universal drawing function 
+        * ID4a1b: Uses a drawing function intrinsic to that function's type
+    * ID4A: Individual elements return or yield a printable format (UIDFT) to the container, and the container then handles arranging and drawing those all. 
+* ID5_: How are the neighbors of the children in TIMTF containers stored?
+        * ID5a:  In a datastructure in the abstraction of the abstraction of the parents. 
+        * ID5b (chosen 11/6): In a graph based system where the children know their neighbors and are updated on changes. 
 
 
 Models / Abstractions
@@ -61,6 +75,8 @@ ____________________
                 * Centralized Controller: handle everything in one place, would require updating for each model or view that's added that needs some new way of being interacted with, general purpose so less duplication, but general purpose also means more complicated. Input only goes one place initially, rather than having input handling be handed off, which seems easier in a way. 
                 * Individual Controllers + Router: Router handles the actual input, then sends it to the correct controller, the controller is model/view specific. This means controllers are specialized, which is simplier. But this also means there needs to be a specialized controller for every model/view. Input only goes one place initially, rather than having input handling be handed off, which seems easier in a way.  
                 * Individual Controllers: input goes diretly to the specialized controller. Needs some way of keeping track where the input should go, probably through some method of handing off input to the various specialized controllers.  
+
+.. _ID2a:
 
 PAC Architecture details (ID2a):
     * Follow through of input in a PAC architecture, looking specifically at a menu system. Consider a menu with children of menu elements. Each menu element knows its parent. On a keyboard event, a down arrow for example, the currently active menu item processes that event. Processes can mean: do internally or deactivate itself and then pass the event up to it's parent. The parent recieves the event, interpets a down arrow as a way of navigating through the menu, then activates the next menu element in the menu and tells it it is selected. Activates means passing input handling responsibility onto it. 
@@ -135,6 +151,73 @@ TextContainer - Is one or more of the following a TextBase or a TextContainer
     * irality
     * bitoniau(x) - french for little thingy 
 
+Bounds, Offset and Z-Depth Information
+_____________________________
 
+    * Held in the abstraction. In PAC element knows and keeps track of its own bounds and offset. It is a policy to respect your bounds, offset and Z-Depth, but not enforced by any mechanism(1). Z-depth is recorded as 0 being the front most (zero depth) and higher numbers are farther back
+        (1) This is to allow things to draw outside of their bounds if needed, like in the case of a drop down menu which overlays over the stuff when it pops out. 
+
+
+Menu Container
+______________
+    * An interactive menu
+    * Knows the order of the children
+    * Children are menu elements
+    * Menu Elements are a bit of text that can handle interactivity, including processing basic input. Like up down arrows, or left right, or enter/back. This allows it to do a little bit of processing. Maybe that means activiating whatever the menu element signifies or handing off control to something outside of its scope. 
+        * what happens when something is outside of its scope:
+            * The menu element defocuses itself, then sends an event (using an atomic message queue) to its parent (the menu container), the menu container receives the event and then processes it. 
+            * concrete example: A menu element in a menu of vertically stacked menu elements gets a down arrow. Menu element A defocuses, sends event to parent, parent sees event from menu element A, processes the down arrow as a command to activate and give focus to menu element B. Container sends event to menu element B telling it this. Menu element B proceses the event, and then sets up the input handling (gains focus).
+    * Menu Element base class
+        * could handle the basic processing functionality. The actual processing function should be a simple case switch function which delegates out to other functions to actually act on the input given. This way subclasses can override those functions. 
+            * Concrete example: the processor detects a down arrow and then calls handle_down_arrow(), that way subclasses can write their own handle_down_arrow(). 
+
+
+Text Fields
+___________
+
+    * Places to put text
+    * Called label in Kivy
+
+
+Scrollable container
+____________________
+
+    * It makes whatever is inside of it scrollable (just a neat idea for now)
+
+
+Tileable Interactive Monoline Text Fields - TIMTF
+_________________________________________________
+
+Contains a bit of text with optional styling for editing, only one of each style type per TIMTF
+
+    * In abtrastion: a bit of text, where it goes, how big the field is, cursor location and what styles should be applied to it
+    * In control: process input
+        * normal letter keys and numbers split on cursor location, then join the left, key and right parts back together
+        * arrow keys
+            * left and right change decrement or increment the cursor location
+                * if cursor decrements below zero, then the PAC element defocuses, and pases the event to parent (so parent can tell the TIMTF to the left that it is now active and its cursor position is on the far right)
+                * The converse applies for if the cursor increments past the bounds
+            * up and down causes defocus, and passing of the event up to the parent
+
+Tileable Interactive Text Field Container
+_________________________________________
+
+    * Needs to handle the case where the left most decrements from the left most column and then can't go any farther
+    * needs to handle the converse for the right most
+    * needs to handle line splitting/wrapping
+        * How is TIMTFs extending over the newline at the end handled.
+            * If presentation happened at the container level rather than individual level, then each TIMTF could properly format its own output, and then the container could handle the line wrapping if needed. This would mean TIMTFs wouldn't need to know where they go specifically, instead the container would have to sort that out based on the order and content of all the TIMTFs 
+    * needs to handle moving between TIMTFs 
+    * needs to handle TIMTFs changing length and then shifting over the TIMTFs after it
+
+    .. _ID5:
+
+    * thoughts about children - there seem like two ways to store data about the TITF children of the container:
+        * In a datastructure in the abstraction of the abstraction of the parents. (ID5a)
+        * In a graph based system where the children know their neighbors and are updated on changes. I like this option better. It potentially descreases coupling. (ID5b)
+            * How can the container efficiently iterate over all the children.
+                * One way to is for container control to pull the neighbor out of the TIMTF, and then use that to go to the next TIMTF. This increases coupling because it depends on a consistent storage method for neighbors (stops interchanging of other things in the place of TIMTFs). 
+                * Another way could be to have a get_neighbor(direction) method in the TIMTF. This gives a consistent interface, which allows interoperablity. This also seems slightly less pythonic, since it uses a getter (and perhaps a setter). One wonders then if there should be an instance property. But that seems weird, since obstensibily it would be an instance property of the control. 
+    
 
 
