@@ -45,10 +45,7 @@ Some of these are pending. Some are decided.
         * ID4a1a: Uses a shared universal drawing function 
         * ID4a1b: Uses a drawing function intrinsic to that function's type
     * ID4A: Individual elements return or yield a printable format (UIDFT) to the container, and the container then handles arranging and drawing those all. 
-
-* ID5_: 
-
-How are the neighbors of the children in TIMTF containers stored?
+* ID5_: How are the neighbors of the children in TIMTF containers stored?
         * ID5a:  In a datastructure in the abstraction of the abstraction of the parents. 
         * ID5b (chosen 11/6): In a graph based system where the children know their neighbors and are updated on changes. 
 
