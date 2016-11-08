@@ -6,7 +6,7 @@ The ideal Plié would be perfectly decoupled from it's display output, so a drop
 Some version of Model View Controller, Model ViewModel View, or presentation abstraction control
 
 
-Developers Notes About This Document
+Developer's Notes About This Document
 ____________________________________
 
 * This is a living document / my scratch pad for reasoning about Plié
@@ -210,12 +210,15 @@ _________________________________________
 
 .. _ID5:
 
-* thoughts about children - there seem like two ways to store data about the TITF children of the container:
-    * In a data structure in the abstraction of the abstraction of the parents. (ID5a)
-    * In a graph based system where the children know their neighbors and are updated on changes. I like this option better. It potentially descreases coupling. (ID5b)
-        * How can the container efficiently iterate over all the children.
-            * One way to is for container control to pull the neighbor out of the TIMTF, and then use that to go to the next TIMTF. This increases coupling because it depends on a consistent storage method for neighbors (stops interchanging of other things in the place of TIMTFs). 
-            * Another way could be to have a get_neighbor(direction) method in the TIMTF. This gives a consistent interface, which allows interoperablity. This also seems slightly less pythonic, since it uses a getter (and perhaps a setter). One wonders then if there should be an instance property. But that seems weird, since obstensibily it would be an instance property of the control. 
+Thoughts about children - there seem like two ways to store data about the TITF children of the container:
+
+.. _ID5a: In a data structure in the abstraction of the parents. (ID5a)
+.. _ID5b: In a graph based system where the children know their neighbors and are updated on changes. I like this option better. It potentially descreases coupling. (ID5b)
+        
+    .. _ID5b1: How can the container efficiently iterate over all the children.
+        .. _ID5b1a: One way to is for container control to pull the neighbor out of the TIMTF, and then use that to go to the next TIMTF. This increases coupling because it depends on a consistent storage method for neighbors (stops interchanging of other things in the place of TIMTFs). 
+        .. _ID5b1b: Another way could be to have a get_neighbor(direction) method in the TIMTF. This gives a consistent interface, which allows interoperablity. This also seems slightly less pythonic, since it uses a getter (and perhaps a setter). One wonders then if there should be an instance property. But that seems weird, since ostensibly it would be an instance property of the control. 
+        .. _ID5b1c: Another way could be to have a message receiving or an event receiving procedure in the control of the TIMTF through which all exterior communication would happen. Through this protocol the parent TITF container would communicate with the child TIMTF. 
     
 
 
