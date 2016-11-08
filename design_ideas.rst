@@ -209,14 +209,15 @@ _________________________________________
 * needs to handle moving between TIMTFs 
 * needs to handle TIMTFs changing length and then shifting over the TIMTFs after it
 
+.. _`ID5`:
 
-* _`ID5`: Thoughts about children - there seem like two ways to store data about the TITF children of the container:
+*  Thoughts about children - there seem like two ways to store data about the TITF children of the container:
 
-    .. _ID5a:
+        .. _ID5a:
 
     * In a data structure in the abstraction of the parents. (ID5a)
 
-    .. _ID5b:
+        .. _ID5b:
 
     * In a graph based system where the children know their neighbors and are updated on changes. I like this option better. It potentially descreases coupling. (ID5b)
         
