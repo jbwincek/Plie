@@ -208,9 +208,8 @@ _________________________________________
 * needs to handle moving between TIMTFs 
 * needs to handle TIMTFs changing length and then shifting over the TIMTFs after it
 
-.. _ID5:
 
-Thoughts about children - there seem like two ways to store data about the TITF children of the container:
+* _`ID5` Thoughts about children - there seem like two ways to store data about the TITF children of the container:
 
 .. _ID5a:
 
@@ -228,7 +227,7 @@ Thoughts about children - there seem like two ways to store data about the TITF 
         
     * One way to is for container control to pull the neighbor out of the TIMTF, and then use that to go to the next TIMTF. This increases coupling because it depends on a consistent storage method for neighbors (stops interchanging of other things in the place of TIMTFs). 
         
-.. _ID5b1b: 
+_ID5b1b: 
 
     * Another way could be to have a get_neighbor(direction) method in the TIMTF. This gives a consistent interface, which allows interoperablity. This also seems slightly less pythonic, since it uses a getter (and perhaps a setter). One wonders then if there should be an instance property. But that seems weird, since ostensibly it would be an instance property of the control. 
         
